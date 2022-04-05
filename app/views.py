@@ -5,10 +5,12 @@ Werkzeug Documentation:  https://werkzeug.palletsprojects.com/
 This file creates your application.
 """
 
-from app import app, db
-from flask import render_template, request, jsonify, send_file
+from app import app, db, login_manager
+from flask import render_template, request, jsonify, send_file, send_from_directory, redirect
 import os
 from app.models import Users, Cars, Favourites
+from werkzeug.utils import secure_filename, check_password_hash
+from app.forms import LoginForm, CarForm, RegisterForm 
 
 
 ###
@@ -18,6 +20,145 @@ from app.models import Users, Cars, Favourites
 @app.route('/')
 def index():
     return jsonify(message="This is the beginning of our API")
+
+@app.route('/api/auth/login', methods=['GET','POST'])
+def login():
+    form = LoginForm()
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            username = form.username.data
+            password = form.password.data
+            user = Users.query.filter_by(username=username).first()
+
+            if user is not None and check_password_hash(user.password, password): 
+                return jsonify(message="Login successful", user=user.serialize())
+            else:
+                return jsonify(message="Incorrect username or password", user=None)
+        else:
+            return jsonify(message="Invalid request", user=None)
+
+    return jsonify(message="Invalid request", user=None)
+
+@app.route('/api/register', methods=['GET','POST'])
+def register():
+    form = RegisterForm()
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            username = form.username.data
+            password = form.password.data
+            name = form.name.data
+            email = form.email.data
+            location = form.location.data
+            biography = form.biography.data
+            photo = form.photo.data
+            filename = secure_filename(photo.filename)
+            photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            date_joined = form.date_joined.data
+            user = Users(username,password,name,email,location,biography,filename,date_joined)
+            db.session.add(user)
+            db.session.commit()
+            return jsonify(message="Registration successful", user=user.serialize())
+        else:
+            return jsonify(message="Invalid request", user=None)
+
+    return jsonify(message="Invalid request", user=None)
+
+@app.route('/api/logout', methods=['GET','POST'])
+def logout():
+    return jsonify(message="Logout successful")
+
+@app.route('/api/cars', methods=['GET','POST'])
+def cars():
+    if request.method == 'GET':
+        cars = Cars.query.all()
+        return jsonify(cars=[car.serialize() for car in cars])
+    elif request.method == 'POST':
+        form = CarForm()
+        if form.validate_on_submit():
+            make = form.make.data
+            model = form.model.data
+            year = form.year.data
+            color = form.color.data
+            price = form.price.data
+            image = form.image.data
+            filename = secure_filename(image.filename)
+            image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            description = form.description.data
+            transmision = form.transmision.data
+            car_type = form.car_type.data
+            car = Cars(make,model,year,color,price,filename,description,transmision,car_type)
+            db.session.add(car)
+            db.session.commit()
+            return jsonify(message="Car added successfully", car=car.serialize())
+        else:
+            return jsonify(message="Invalid request", car=None)
+
+    return jsonify(message="Invalid request", car=None)
+
+@app.route('/api/cars/<int:id>', methods=['GET'])
+def car(id):
+    if request.method == 'GET':
+        car = Cars.query.get(id)
+        return jsonify(car=car.serialize())
+
+    return jsonify(message="Invalid request", car=None)
+
+@app.route('/api/cars/<int:id>/favourite', methods=['POST'])
+def favourite(id):
+    if request.method == 'POST':
+        car = Cars.query.get(id)
+        user = Users.query.get(1)
+        favourite = Favourites(car,user)
+        db.session.add(favourite)
+        db.session.commit()
+        return jsonify(message="Car added to favourites", car=car.serialize())
+
+    return jsonify(message="Invalid request", car=None)
+
+@app.route('/api/search', methods=['GET'])
+def search():
+    if request.method == 'GET':
+        make = request.args.get('make')
+        model = request.args.get('model')
+
+        if make and model:
+            cars = Cars.query.filter_by(make=make, model=model).all()
+            return jsonify(cars=[car.serialize() for car in cars])
+        elif make:
+            cars = Cars.query.filter_by(make=make).all()
+            return jsonify(cars=[car.serialize() for car in cars])
+        elif model:
+            cars = Cars.query.filter_by(model=model).all()
+            return jsonify(cars=[car.serialize() for car in cars])
+        else:
+            cars = Cars.query.all()
+            return jsonify(cars=[car.serialize() for car in cars])
+
+    return jsonify(message="Invalid request", cars=None)
+
+@app.route('/api/users/<int:id>', methods=['GET'])
+def user(id):
+    if request.method == 'GET':
+        user = Users.query.get(id)
+        return jsonify(user=user.serialize())
+
+    return jsonify(message="Invalid request", user=None)
+
+@app.route('/api/users/<int:id>/favourites', methods=['GET'])
+def favourites(id):
+    if request.method == 'GET':
+        user = Users.query.get(id)
+        favourites = Favourites.query.filter_by(user=user).all()
+        return jsonify(favourites=[favourite.serialize() for favourite in favourites])
+
+    return jsonify(message="Invalid request", favourites=None)
+
+
+
+
+
+
+
 
 
 ###
