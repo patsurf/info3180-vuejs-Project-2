@@ -3,7 +3,7 @@ from . import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
 class Cars(db.Model):
-    __tablename__ = 'Cars'
+    __tablename__ = 'Cars' # set table name
     id = db.Column(db.Integer, primary_key=True)
     discription = db.Column(db.String(length=80), nullable=False)
     make = db.Column(db.String(length=255), nullable=False)
