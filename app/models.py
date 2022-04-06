@@ -29,21 +29,6 @@ class Cars(db.Model):
         self.photo = photo
         self.user_id = user_id
 
-    def is_authenticated(self):
-        return True
-
-    def is_active(self):
-        return True
-
-    def is_anonymous(self):
-        return False
-
-    def get_id(self):
-        try:
-            return unicode(self.id)  # python 2 support
-        except NameError:
-            return str(self.id)  # python 3 support
-
     def __repr__(self):
         return '<Cars %r>' % self.id
     
@@ -56,21 +41,6 @@ class Favourites(db.Model):
     def __init__(self,car_id,user_id):
         self.car_id = car_id
         self.user_id = user_id
-    
-    def is_authenticated(self):
-        return True
-
-    def is_active(self):
-        return True
-
-    def is_anonymous(self):
-        return False
-
-    def get_id(self):
-        try:
-            return unicode(self.id)  # python 2 support
-        except NameError:
-            return str(self.id)  # python 3 support
 
     def __repr__(self):
         return '<Favourites %r>' % self.user_id
