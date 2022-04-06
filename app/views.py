@@ -57,7 +57,18 @@ def register():
             user = Users(username,password,name,email,location,biography,filename,date_joined)
             db.session.add(user)
             db.session.commit()
-            return jsonify(message="Registration successful", user=user.serialize())
+
+            data = {
+                username: username,
+                password: password,
+                name: name,
+                email: email,
+                location: location,
+                biography: biography,
+                photo: filename,
+                date_joined: date_joined
+            }
+            return jsonify(message="Registration successful", user=data)
         else:
             return jsonify(message="Invalid request", user=None)
 
@@ -89,7 +100,19 @@ def cars():
             car = Cars(make,model,year,color,price,filename,description,transmision,car_type)
             db.session.add(car)
             db.session.commit()
-            return jsonify(message="Car added successfully", car=car.serialize())
+
+            data = {
+                make: make,
+                model: model,
+                year: year,
+                color: color,
+                price: price,
+                image: filename,
+                description: description,
+                transmision: transmision,
+                car_type: car_type
+            }
+            return jsonify(message="Car added successfully", car=data)
         else:
             return jsonify(message="Invalid request", car=None)
 
@@ -152,12 +175,6 @@ def favourites(id):
         return jsonify(favourites=[favourite.serialize() for favourite in favourites])
 
     return jsonify(message="Invalid request", favourites=None)
-
-
-
-
-
-
 
 
 
