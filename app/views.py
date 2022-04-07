@@ -7,6 +7,7 @@ This file creates your application.
 
 from app import app, db, login_manager
 from flask import render_template, request, jsonify, send_file, send_from_directory, redirect
+from flask_login import login_user, logout_user, current_user, login_required
 import os
 from app.models import Users, Cars, Favourites
 from werkzeug.utils import secure_filename, check_password_hash
@@ -21,8 +22,12 @@ from app.forms import LoginForm, CarForm, RegisterForm
 def index():
     return jsonify(message="This is the beginning of our API")
 
+# Login
 @app.route('/api/auth/login', methods=['GET','POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect('/api/users/' + str(current_user.id))
+
     form = LoginForm()
     if request.method == 'POST':
         if form.validate_on_submit():
@@ -31,14 +36,21 @@ def login():
             user = Users.query.filter_by(username=username).first()
 
             if user is not None and check_password_hash(user.password, password): 
-                return jsonify(message="Login successful", user=user.serialize())
+                remember_me = False
+
+            if 'remember_me' in request.form:
+                remember_me = True
+                login_user(user, remember=remember_me)
+                return jsonify(message="Login successful", user=user.serialize(), redirect="/api/users/" + str(user.id))
             else:
-                return jsonify(message="Incorrect username or password", user=None)
+                login_user(user)
+                return jsonify(message="Login successful", user=user.serialize(), redirect="/api/users/" + str(user.id))
         else:
-            return jsonify(message="Invalid request", user=None)
+            return jsonify(message="Invalid username or password", errors=form_errors(form))
 
-    return jsonify(message="Invalid request", user=None)
+    return jsonify(message="Invalid request", user=None, redirect="/api/auth/login")
 
+# Register
 @app.route('/api/register', methods=['GET','POST'])
 def register():
     form = RegisterForm()
@@ -70,14 +82,12 @@ def register():
             }
             return jsonify(message="Registration successful", user=data)
         else:
-            return jsonify(message="Invalid request", user=None)
+            return jsonify(message="Registration Unsuccessful", user=None, errors=form_errors(form))
 
     return jsonify(message="Invalid request", user=None)
 
-@app.route('/api/logout', methods=['GET','POST'])
-def logout():
-    return jsonify(message="Logout successful")
 
+# Car Form and List
 @app.route('/api/cars', methods=['GET','POST'])
 def cars():
     if request.method == 'GET':
@@ -114,19 +124,22 @@ def cars():
             }
             return jsonify(message="Car added successfully", car=data)
         else:
-            return jsonify(message="Invalid request", car=None)
+            return jsonify(message="Car not added successfully", car=None)
 
     return jsonify(message="Invalid request", car=None)
 
+# Car Details
 @app.route('/api/cars/<int:id>', methods=['GET'])
 def car(id):
     if request.method == 'GET':
         car = Cars.query.get(id)
         return jsonify(car=car.serialize())
 
-    return jsonify(message="Invalid request", car=None)
+    return jsonify(message="Car not found", car=None)
 
+# Favourites
 @app.route('/api/cars/<int:id>/favourite', methods=['POST'])
+@login_required
 def favourite(id):
     if request.method == 'POST':
         car = Cars.query.get(id)
@@ -138,6 +151,7 @@ def favourite(id):
 
     return jsonify(message="Invalid request", car=None)
 
+# Search
 @app.route('/api/search', methods=['GET'])
 def search():
     if request.method == 'GET':
@@ -159,6 +173,7 @@ def search():
 
     return jsonify(message="Invalid request", cars=None)
 
+# User Details
 @app.route('/api/users/<int:id>', methods=['GET'])
 def user(id):
     if request.method == 'GET':
@@ -167,6 +182,7 @@ def user(id):
 
     return jsonify(message="Invalid request", user=None)
 
+# User Favourites
 @app.route('/api/users/<int:id>/favourites', methods=['GET'])
 def favourites(id):
     if request.method == 'GET':
@@ -176,7 +192,10 @@ def favourites(id):
 
     return jsonify(message="Invalid request", favourites=None)
 
-
+# Logout
+@app.route('/api/logout', methods=['GET','POST'])
+def logout():
+    return jsonify(message="Logout successful")
 
 ###
 # The functions below should be applicable to all Flask apps.
