@@ -1,6 +1,6 @@
 # Add any model classes for Flask-SQLAlchemy here
 from . import db
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import generate_password_hash
 
 class Cars(db.Model):
     __tablename__ = 'Cars' # set table name
