@@ -8,7 +8,7 @@ This file creates your application.
 
 from datetime import datetime
 from urllib import response
-from app import app, db, csrf
+from app import app, db, csrf, login_manager
 from flask import render_template, request, jsonify, send_file, send_from_directory, redirect
 from flask_login import login_user, logout_user, current_user, login_required
 import os
@@ -70,24 +70,20 @@ def index():
 
 @app.route('/api/auth/login', methods=['POST'])
 def login():
-    if current_user.is_authenticated:
-        return redirect('/api/users/' + str(current_user.id))
-
     form = LoginForm()
     if request.method == 'POST':
         if form.validate_on_submit():
             username = form.username.data
             password = form.password.data
             user = Users.query.filter_by(username=username).first()
-            if user:
-                if check_password_hash(user.password, password):
+            if user is not None and check_password_hash(user.password, password):
                     token = jwt.encode({'sub': user.username, 'iat': datetime.datetime.utcnow(), 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=1440)}, app.config['SECRET_KEY'])
-                    return jsonify({'token': token.decode('UTF-8'), 'authenticated': True}), redirect('/api/users/' + str(user.id)), 200
-                else:
-                    return jsonify(message="Incorrect username or password", authenticated=False), 401
-
-            if not user:
-                return jsonify({'message':'Invalid credentials', 'authenticated':False}), 401
+                    message="Login Successful"
+                    authenticated = True
+                    response = {'token': token.decode('UTF-8'), 'message': message, 'authenticated': authenticated}
+                    return jsonify(response), 200
+            else:
+                return jsonify(message="Incorrect username or password", authenticated=False), 401
     return jsonify(message="Invalid request", authenticated=False), 400
             
            

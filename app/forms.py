@@ -21,6 +21,7 @@ class RegisterForm(FlaskForm):
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[InputRequired()])
     password = PasswordField('Password', validators=[InputRequired()])
+    remember_me = BooleanField('Remember me')
 
 class CarForm(FlaskForm):
     make = StringField('Make', validators=[InputRequired()])
