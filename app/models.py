@@ -55,11 +55,11 @@ class Users(db.Model):
     location = db.Column(db.String(length=80), nullable=False)
     biography = db.Column(db.String(length=255), nullable=False)
     photo = db.Column(db.String(length=80), nullable=False)
-    date_joined = db.Column(db.DateTime, nullable=False)
+    date_joined = db.Column(db.String(length=255), nullable=False)
 
     def __init__(self,username,password,name,email,location,biography,photo,date_joined):
         self.username = username
-        self.set_password = generate_password_hash(password, method='pbkdf2:sha256')
+        self.password = generate_password_hash(password, method='pbkdf2:sha256')
         self.name = name
         self.email = email
         self.location = location

@@ -2,13 +2,13 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms import StringField, PasswordField, BooleanField, FloatField, DateField, DateTimeField
-from wtforms.validators import InputRequired
+from wtforms.validators import InputRequired, DataRequired
 
 
 
 class RegisterForm(FlaskForm):
     username = StringField('Username', validators=[InputRequired()])
-    password = PasswordField('Password', validators=[InputRequired()])
+    password = StringField('Password', validators=[InputRequired()])
     email = StringField('Email', validators=[InputRequired()])
     name = StringField('Name', validators=[InputRequired()])
     location = StringField('Address', validators=[InputRequired()])
@@ -17,12 +17,10 @@ class RegisterForm(FlaskForm):
         FileRequired(), 
         FileAllowed(['jpg', 'png'], 'Images only!')
     ])
-    date_joined = DateTimeField('Date Joined', validators=[InputRequired()])
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[InputRequired()])
     password = PasswordField('Password', validators=[InputRequired()])
-    remember_me = BooleanField('Remember me')
 
 class CarForm(FlaskForm):
     make = StringField('Make', validators=[InputRequired()])
