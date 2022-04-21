@@ -13,6 +13,7 @@ from app.models import Users, Cars, Favourites
 from werkzeug.utils import secure_filename
 from werkzeug.security import check_password_hash
 from app.forms import LoginForm, CarForm, RegisterForm 
+from datetime import datetime
 
 ###
 # Authentication
@@ -119,7 +120,7 @@ def register():
             photo = form.photo.data
             filename = secure_filename(photo.filename)
             photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            date_joined = form.date_joined.data
+            date_joined = format_date_joined(datetime.now())
             user = Users(username,password,name,email,location,biography,filename,date_joined)
             db.session.add(user)
             db.session.commit()
@@ -250,6 +251,10 @@ def favourites(id):
         return jsonify(favourites=[favourite.serialize() for favourite in favourites])
 
     return jsonify(message="Invalid request", favourites=None)
+
+# Date Joined Editor
+def format_date_joined(date):
+    return "Joined " + date.strftime("%B %d, %Y")
 
 # Logout
 @app.route('/api/logout', methods=['GET','POST'])
