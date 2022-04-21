@@ -32,11 +32,6 @@
 <p>Upload your photo</p>
 <br><input type="file" name="photo"/><br>
 
-
-<br><label for="date_joined">Date Joined</label>
-<p>Please enter the date you joined</p>
-<input type="date" name="date_joined"/><br>
-
 <br><button type="submit"   value="register"> Register</button>
 
 
