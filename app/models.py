@@ -59,7 +59,7 @@ class Users(db.Model):
 
     def __init__(self,username,password,name,email,location,biography,photo,date_joined):
         self.username = username
-        self.set_password = generate_password_hash(password, method='pbkdf2:sha256')
+        self.password = generate_password_hash(password, method='pbkdf2:sha256')
         self.name = name
         self.email = email
         self.location = location
