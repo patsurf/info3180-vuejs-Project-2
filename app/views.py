@@ -14,6 +14,42 @@ from werkzeug.utils import secure_filename
 from werkzeug.security import check_password_hash
 from app.forms import LoginForm, CarForm, RegisterForm 
 
+###
+# Authentication
+###
+
+def token_required(f):
+    @wraps(f)
+    def _verify(*args, **kwargs):
+        auth_headers = request.headers.get('Authorization', '').split()
+
+        invalid_msg = {
+            'message': 'Invalid token. Registeration and / or authentication required',
+            'authenticated': False
+        }
+        expired_msg = {
+            'message': 'Expired token. Reauthentication required.',
+            'authenticated': False
+        }
+
+        if len(auth_headers) != 2:
+            return jsonify(invalid_msg), 401
+
+        try:
+            token = auth_headers[1]
+            data = jwt.decode(token, app.config['SECRET_KEY'])
+            user = Users.query.filter_by(email=data['sub']).first()
+            if not user:
+                raise RuntimeError('User not found')
+            return f(user, *args, **kwargs)
+        except jwt.ExpiredSignatureError:
+            # 401 is Unauthorized HTTP status code
+            return jsonify(expired_msg), 401
+        except (jwt.InvalidTokenError, Exception) as e:
+            print(e)
+            return jsonify(invalid_msg), 401
+
+    return _verify
 
 ###
 # Routing for your application.
@@ -50,6 +86,23 @@ def login():
             return jsonify(message="Invalid username or password", errors=form_errors(form))
 
     return jsonify(message="Invalid request", user=None, redirect="/api/auth/login")
+
+#check this
+# @app.route('/api/auth/login', methods=['POST'])
+# def login():
+#     form = LoginForm()
+#     if request.method == 'POST':
+#         if form.validate_on_submit():
+#             username = form.username.data
+#             password = form.password.data
+#             user = Users.query.filter_by(username=username).first()
+#             if user is not None and check_password_hash(user.password, password):
+#                     token = jwt.encode({'sub': user.username, 'iat': datetime.datetime.utcnow(), 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=1440)}, app.config['SECRET_KEY'])
+#                     response = {'token': token.decode('UTF-8')}
+#                     return jsonify(response), 200
+#             else:
+#                 return jsonify(message="Incorrect username or password", authenticated=False), 401
+#     return jsonify(message="Invalid request", authenticated=False), 400
 
 # Register
 @app.route('/api/register', methods=['GET','POST'])
@@ -141,6 +194,7 @@ def car(id):
 # Favourites
 @app.route('/api/cars/<int:id>/favourite', methods=['POST'])
 @login_required
+@token_required
 def favourite(id):
     if request.method == 'POST':
         car = Cars.query.get(id)
@@ -176,6 +230,8 @@ def search():
 
 # User Details
 @app.route('/api/users/<int:id>', methods=['GET'])
+@token_required
+@tlogin_required
 def user(id):
     if request.method == 'GET':
         user = Users.query.get(id)
@@ -185,6 +241,8 @@ def user(id):
 
 # User Favourites
 @app.route('/api/users/<int:id>/favourites', methods=['GET'])
+@token_required
+@login_required
 def favourites(id):
     if request.method == 'GET':
         user = Users.query.get(id)
