@@ -17,13 +17,13 @@ class RegisterForm(FlaskForm):
         FileRequired(), 
         FileAllowed(['jpg', 'png'], 'Images only!')
     ])
-    register= SubmitField('Register')
+#     register= SubmitField('Register')
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[InputRequired()])
     password = PasswordField('Password', validators=[InputRequired()])
     remember_me = BooleanField('Remember me')
-     login= SubmitField('Login')
+#      login= SubmitField('Login')
 
 class CarForm(FlaskForm):
     make = StringField('Make', validators=[InputRequired()])
