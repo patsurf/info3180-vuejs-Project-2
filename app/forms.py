@@ -17,7 +17,6 @@ class RegisterForm(FlaskForm):
         FileRequired(), 
         FileAllowed(['jpg', 'png'], 'Images only!')
     ])
-    date_joined = DateTimeField('Date Joined', validators=[InputRequired()])
     register= SubmitField('Register')
 
 class LoginForm(FlaskForm):
