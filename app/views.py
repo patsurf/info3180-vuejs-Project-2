@@ -10,7 +10,8 @@ from flask import render_template, request, jsonify, send_file, send_from_direct
 from flask_login import login_user, logout_user, current_user, login_required
 import os
 from app.models import Users, Cars, Favourites
-from werkzeug.utils import secure_filename, check_password_hash
+from werkzeug.utils import secure_filename
+from werkzeug.security import check_password_hash
 from app.forms import LoginForm, CarForm, RegisterForm 
 
 

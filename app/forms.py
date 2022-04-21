@@ -1,7 +1,7 @@
 # Add any form classes for Flask-WTF here
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed, FileRequired
-from wtforms import StringField, PasswordField, BooleanField, FloatField, DateField, DateTimeField
+from wtforms import StringField, PasswordField, BooleanField, FloatField, DateField, DateTimeField, SubmitField
 from wtforms.validators import InputRequired
 
 
@@ -18,11 +18,13 @@ class RegisterForm(FlaskForm):
         FileAllowed(['jpg', 'png'], 'Images only!')
     ])
     date_joined = DateTimeField('Date Joined', validators=[InputRequired()])
+    register= SubmitField('Register')
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[InputRequired()])
     password = PasswordField('Password', validators=[InputRequired()])
     remember_me = BooleanField('Remember me')
+     login= SubmitField('Login')
 
 class CarForm(FlaskForm):
     make = StringField('Make', validators=[InputRequired()])

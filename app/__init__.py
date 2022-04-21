@@ -22,4 +22,4 @@ login_manager.login_view = 'login'
 
 # Migrate
 migrate = Migrate(app, db)
-from app import views
+
