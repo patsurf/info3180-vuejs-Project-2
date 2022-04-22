@@ -1,15 +1,28 @@
+<script>
+import LoginForm from '@/components/LoginForm.vue'
+export default {
+	data() {
+	  return {
+	  
+	  };
+	},
+	components: { LoginForm  }
+};
+
+
+
+</script>
+
+
+
 <template>
-    <div class="container text-center">
-        <LoginForm/>
-    </div>
-    
+    	<h2>Login</h2>
+    	 <LoginForm></LoginForm>
+ 
+
+
+
 </template>
 
-<script>
-import LoginForm from '@/components/LoginForm.vue';
-export default {
-    components: {
-        LoginForm
-    }
-};
-</script>
+
+<style></style>

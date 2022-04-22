@@ -18,15 +18,23 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue')
     },
     {
-      path: '/register',
-      name: 'register',
-      component: () => import('../views/RegisterView.vue')
+    path:'/register',
+    name:'register',
+
+    component: () => import('../views/RegisterView.vue')
     },
     {
-      path: '/login',
-      name: 'login',
-      component: () => import('../views/LoginView.vue')
-    }
+      path:'/login',
+      name:'login',
+
+     component: () => import('../views/LoginView.vue')
+    },
+    {
+    path:'/cars/new',
+    name:'new-car',
+
+    component: () => import('../views/CarFormView.vue')
+   }
   ]
 })
 

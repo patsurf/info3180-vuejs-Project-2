@@ -1,30 +1,24 @@
 <template>
-    <form class="form-signin">
+    <form class="form-signin" @submit.prevent="loginUser" id="loginForm" method="POST" enctype="multipart/form-data">
       <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
       <label for="email" class="sr-only">Email address</label>
-      <input type="email" id="email" name="email" class="form-control" placeholder="Email address" required>
+      <input type="email" id="email" name="email" class="form-control" placeholder="Email address" v-model="email" required>
       <label for="password" class="sr-only">Password</label>
-      <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
-      <div class="checkbox mb-3">
-        <label>
-          <input type="checkbox" name="remember-me" value="remember-me"> Remember me
-        </label>
-      </div>
+      <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" v-model="password" required>
       <button class="btn btn-lg btn-primary btn-block  bg-dark" type="submit">Sign in</button>
     </form>
 </template>
 
-<script> 
+<script>
+import router from "../router";
+
+ 
 export default{
   data() {
       return {
-        email: '',
-        password: ''
+        message: '',
+        token: '',
       }
-  },
-
-  created() {
-      this.getCsrfToken();
   },
   methods: {
     loginUser() {
@@ -37,7 +31,7 @@ export default{
         body: form_data,
 
         headers: {
-          'X-CSRFToken': self.csrfToken
+          "Authorization": 'Bearer ' + self.token
         }
       })
        .then(function (response) {
@@ -47,30 +41,16 @@ export default{
             // display a success message
             self.message = data.message;
             console.log(data);
-            if(data.errors.length > 0) {
-                self.errorFlask = data.errors;
-            }
-        })
-        
-        .catch(function (error) {
+            let token = data.response.token;
+            sessionStorage.setItem('token', token);
+            self.token = token;
+            alert("Login successful");
+            router.push('/');
+        }).catch(function (error) {
             // display an error message
-
-            // Having issues here
             self.errorFlask = error.errors;
             console.log(error);
         });
-    },
-
-    getCsrfToken(){
-      let self = this;
-      fetch("/api/csrf-token")
-        .then((response) => {
-          return response.json();
-        })
-        .then((data) => {
-          console.log(data);
-          self.csrfToken = data.csrf_token;
-        })
     }
   }
 }
