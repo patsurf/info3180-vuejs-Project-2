@@ -15,7 +15,9 @@ export default {
 
 
 <template>
+		<div class="container text-center">
     	 <RegisterForm></RegisterForm>
+		</div>
  
 
 </template>
