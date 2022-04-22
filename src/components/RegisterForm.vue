@@ -28,11 +28,10 @@
             <textarea id="biography" name="biography" class="form-control" placeholder="Biography" required></textarea>
         </div>
         <div class="form-group">
-            <label for="photo">Profile Picture</label>
-            <input type="file" id="photo" class="form-control-file" name="photo" placeholder="Profile Picture" @change="fileSelected" required>
+            <br><label for="photo">Profile Picture</label><br>
+           <input type="file" id="photo" class="form-control-file" name="photo" placeholder="Profile Picture" @change="fileSelected" required>
         </div>
-        <div></div>
-        <button class="btn btn-lg btn-primary btn-block  bg-dark" type="submit">Register</button> 
+        <br><button class="btn btn-lg btn-primary btn-block  bg-dark" type="submit">Register</button> 
     </form>
 </template>
 

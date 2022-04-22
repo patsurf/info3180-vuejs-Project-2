@@ -17,7 +17,6 @@ export default {
 
 <template>
 		<div class="container">
-			<h2>Car Form</h2>
 			<CarForm></CarForm>
 		</div>
     	

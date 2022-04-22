@@ -16,11 +16,9 @@ export default {
 
 
 <template>
-    	<h2>Login</h2>
+	<div class="container">
     	 <LoginForm></LoginForm>
- 
-
-
+	</div>
 
 </template>
 
