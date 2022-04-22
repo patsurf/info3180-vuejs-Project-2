@@ -2,7 +2,7 @@
     <form class="form-signin" @submit.prevent="registerUser" id="registerForm" method="POST" enctype="multipart/form-data">
         <div v-if="message" class="alert alert-success" role="alert">{{ message }}</div>
         <li v-for ="err in errorFlask " class="alert alert-danger" role="alert">{{ err }}</li>
-        <h1 class="h3 mb-3 font-weight-normal">Please register</h1>
+        <h1 class="h3 mb-3 font-weight-normal">Register New User</h1>
         <div class="form-group">
             <label for="username">Username</label>
             <input type="text" id="username" name="username" class="form-control" placeholder="Username" required>
@@ -32,7 +32,7 @@
             <input type="file" id="photo" class="form-control-file" name="photo" placeholder="Profile Picture" @change="fileSelected" required>
         </div>
         <div></div>
-        <button class="btn btn-lg btn-primary btn-block  bg-dark" type="submit">Submit</button> 
+        <button class="btn btn-lg btn-primary btn-block  bg-dark" type="submit">Register</button> 
     </form>
 </template>
 
@@ -42,15 +42,7 @@ export default {
         return {
             csrfToken: '',
             errorFlask: [],
-            message: '',
-            username: '',
-            password: '',
-            name: '',
-            email: '',
-            location: '',
-            biography: '',
-            date_joined: ''
-
+            message: ''
         }
     },
 
@@ -70,7 +62,6 @@ export default {
                 headers: { 
                     'X-CSRF-TOKEN': this.csrfToken
                 }
-
             })
                 .then(function (response) {
                     return response.json();

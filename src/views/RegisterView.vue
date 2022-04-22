@@ -1,15 +1,26 @@
+<script>
+import RegisterForm from '@/components/RegisterForm.vue'
+export default {
+	data() {
+	  return {
+	  
+	  };
+	},
+	components: { RegisterForm  }
+};
+
+
+</script>
+
+
+
 <template>
-    <div class="container text-center">
-        <RegisterForm/>
-    </div>
-    
+    	 <RegisterForm></RegisterForm>
+ 
+
 </template>
 
-<script>
-import RegisterForm from '@/components/RegisterForm.vue';
-export default {
-    components: {
-        RegisterForm
-    }
-};
-</script>
+
+
+
+<style></style>
