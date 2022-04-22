@@ -55,9 +55,6 @@ def token_required(f):
 @app.route('/api/secure', methods=['GET'])
 @token_required
 def api_secure():
-    # This data was retrieved from the payload of the JSON Web Token
-    # take a look at the requires_auth decorator code to see how we decoded
-    # the information from the JWT.
     user = g.current_user
     return jsonify(data={"user": user}, message="Success")
 
@@ -123,33 +120,33 @@ def register():
 
 
 # Car Form and List
-@app.route('/api/cars/<user_id>', methods=['GET','POST'])
+@app.route('/api/cars', methods=['GET','POST'])
 def cars():
     form = CarForm()
     if request.method == 'GET':
         cars = Cars.query.all()
         return jsonify(cars=[car.serialize() for car in cars])
     elif request.method == 'POST':
+        form.description.data = request.form['description']
         form.make.data = request.form['make']
         form.model.data = request.form['model']
         form.year.data = request.form['year']
         form.color.data = request.form['color']
         form.price.data = request.form['price']
-        form.photo.data = request.files['photo']
-        form.discription.data = request.form['discription']
+        form.image.data = request.files['image']
         if form.validate_on_submit():
             make = form.make.data
             model = form.model.data
             year = form.year.data
             color = form.color.data
             price = form.price.data
-            photo = form.image.data
-            filename = secure_filename(photo.filename)
-            photo.save(os.path.join(app.config['CAR_IMG_UPLOAD_FOLDER'], filename))
-            discription = form.discription.data
+            image = form.image.data
+            filename = secure_filename(image.filename)
+            image.save(os.path.join(app.config['CAR_IMG_UPLOAD_FOLDER'], filename))
+            description = form.description.data
             transmision = form.transmision.data
             car_type = form.car_type.data
-            car = Cars(make,model,year,color,price,filename,discription,transmision,car_type)
+            car = Cars(make,model,year,color,price,filename,description,transmision,car_type)
             db.session.add(car)
             db.session.commit()
             return jsonify(message="Car added successfully", errors=form_errors(form))

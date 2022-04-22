@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash
 class Cars(db.Model):
     __tablename__ = 'Cars' # set table name
     id = db.Column(db.Integer, primary_key=True)
-    discription = db.Column(db.String(length=80), nullable=False)
+    description = db.Column(db.String(length=80), nullable=False)
     make = db.Column(db.String(length=255), nullable=False)
     model = db.Column(db.String(length=80), nullable=False)
     colour = db.Column(db.String(length=80), nullable=False)
@@ -13,12 +13,12 @@ class Cars(db.Model):
     transmision = db.Column(db.String(length=200), nullable=False)
     car_type = db.Column(db.String(length=80), nullable=False)
     price = db.Column(db.Float(), nullable=False)
-    photo = db.Column(db.String(length=80), nullable=False)
+    image = db.Column(db.String(length=80), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('Users.id'), nullable=False)
 
     
-    def __init__(self,discription,make,model,colour,year,transmision,car_type,price,photo,user_id):
-        self.discription = discription
+    def __init__(self,description,make,model,colour,year,transmision,car_type,price,image,user_id):
+        self.description = description
         self.make = make
         self.model = model
         self.colour = colour
@@ -26,7 +26,7 @@ class Cars(db.Model):
         self.transmision = transmision
         self.car_type = car_type
         self.price = price
-        self.photo = photo
+        self.image = image
         self.user_id = user_id
 
     def __repr__(self):

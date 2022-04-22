@@ -1,5 +1,5 @@
 <template>
-    <form class="form-sigin" @submit.prevent="newCar" id="newCarForm" method="POST" enctype="multipart/form-data">
+    <form class="form-sigin" @submit.prevent="newCar" id="CarForm" method="POST" enctype="multipart/form-data">
         <div v-if="message" class="alert alert-success" role="alert">{{ message }}</div>
         <li v-for="err in errorFlask " class="alert alert-danger" role="alert">{{ err }}</li>
         <h1 class="h3 mb-3 font-weight-normal">Add New Car</h1>
@@ -29,15 +29,15 @@
                 <input type="text" class="form-control" id="transmission" name="transmission" required>
             </div>
             <div class="form-group col-md-10 ">
-                <label for="discription">Description</label>
-                <textarea type="description" class="form-control" id="discription" name="discription"></textarea>
+                <label for="description">Description</label>
+                <textarea type="description" class="form-control" id="description" name="description"></textarea>
             </div>
         </div>
         <br>
-        <label for="photo">Upload Photo</label>
+        <label for="image">Upload Photo</label>
         <br>
         <div class="form-group">
-            <input type="file" id="photo" class="form-control-file" name="photo"
+            <input type="file" id="image" class="form-control-file" name="image"
                 @change="fileSelected" required>
         </div>
         <br>
@@ -63,44 +63,27 @@ export default {
     methods: {
         newCar(){
             let self = this;
-            fetch('/api/secure',{
-                'headers': {
+            let CarForm = document.getElementById('CarForm');
+            let form_data = new FormData(CarForm);
+            fetch('/api/cars', {
+                method: 'POST',
+                body: form_data,
+                headers: {
                     'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+                    'X-CSRF-TOKEN': self.csrfToken
                 }
             })
             .then(function(response) {
                 return response.json();
             })
-            .then(function(response) {
-                let result = response.data;
-                console.log(result);
-                self.user_id = result.user_id;
-                return result.user_id
+            .then(function(response){
+                console.log(response);
+                self.message = response.message;
+                router.push('/');                
             })
-            .then(function(user_id) {
-                let self = this;
-                let newCarForm = document.getElementById('newCarForm');
-                let form_data = new FormData(newCarForm);
-                fetch('/api/cars/' + user_id, {
-                    method: 'POST',
-                    body: form_data,
-                    headers: {
-                        'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
-                        'X-CSRF-TOKEN': self.csrfToken
-                    }
-                })
-                .then(function(response) {
-                    return response.json();
-                })
-                .then(function(response){
-                    console.log(response);
-                    router.push('/');
-                    self.message = response;
-                })
-                .catch(function(error) {
-                    console.log(error);
-                    self.errorFlask = error.response.data.errors;
-                })
+            .catch(function(error) {
+                console.log(error);
+                self.errorFlask = error.response.data.errors;
             })
         },
          getCsrfToken() {
