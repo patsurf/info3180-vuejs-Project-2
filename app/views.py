@@ -5,7 +5,7 @@ Werkzeug Documentation:  https://werkzeug.palletsprojects.com/
 This file creates your application.
 """
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from app import app, db
 from flask import render_template, request, jsonify
 from flask_login import login_user, logout_user, current_user, login_required
@@ -101,12 +101,13 @@ def login():
             password = form.password.data
             user = Users.query.filter_by(username=username).first()
             if user is not None and check_password_hash(user.password, password):
-                    token = jwt.encode({'sub': user.username, 'iat': datetime.datetime.utcnow(), 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=1440)}, app.config['SECRET_KEY']).decode('utf-8')
-                    response = {'token': token}
-                    return jsonify(response, message="Token Generated and User Logged In"), 200
+                    payload = {'id': user.id, 'username': user.username}
+                    token = jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
+                    response = {'token': token, 'message':"Token Generated and User Logged In"}
+                    return jsonify(response), 200
             else:
-                return jsonify(message="Incorrect username or password", authenticated=False), 401
-    return jsonify(message="Invalid request", authenticated=False), 400
+                return jsonify(errmessage="Incorrect username or password", authenticated=False, errors=form_errors(form)), 401
+    return jsonify(errmessage="Invalid request", authenticated=False, errors=form_errors(form)), 400
 
 # Register
 # @app.route('/api/register', methods=['GET','POST'])
@@ -170,10 +171,9 @@ def register():
             db.session.add(user)
             db.session.commit()
 
-            message = [{'message':"Registration successful"}]
-            return jsonify(message, errors=form_errors(form))
+            return jsonify(message = "Registration successful" , errors=form_errors(form))
         else:
-            return jsonify(message="Registration Unsuccessful", user=None, errors=form_errors(form))
+            return jsonify(errmessage="Registration Unsuccessful", user=None, errors=form_errors(form))
 
 
 

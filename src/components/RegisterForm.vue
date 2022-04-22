@@ -37,6 +37,8 @@
 </template>
 
 <script>
+import router from "../router";
+
 export default {
     data() {
         return {
@@ -67,17 +69,17 @@ export default {
                     return response.json();
                 })
                 .then(function (data) {
-                    // display a success message
-                    self.message = data.message;
-                    console.log(data);
-                    if(data.errors.length > 0) {
+                    // display a success message if the user is created
+                    if (data.message) {
+                        console.log(data);
+                        self.message = data.message;
+                        router.push('/login');
+                    } else {
                         self.errorFlask = data.errors;
                     }
                 })
                 .catch(function (error) {
                     // display an error message
-
-                    // Having issues here
                     self.errorFlask = error.errors;
                     console.log(error);
                 });

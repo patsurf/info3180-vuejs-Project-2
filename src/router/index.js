@@ -34,7 +34,13 @@ const router = createRouter({
     name:'new-car',
 
     component: () => import('../views/CarFormView.vue')
-   }
+   },
+    {
+      path:'/logout',
+      name:'logout',
+
+      component: () => import('../views/LogoutView.vue')
+    },
   ]
 })
 
