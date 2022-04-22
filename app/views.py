@@ -7,7 +7,7 @@ This file creates your application.
 
 from datetime import datetime, timedelta
 from app import app, db
-from flask import render_template, request, jsonify
+from flask import render_template, request, jsonify, g, session, _request_ctx_stack
 from flask_login import login_user, logout_user, current_user, login_required
 import os
 from app.models import Users, Cars, Favourites
@@ -23,37 +23,43 @@ from flask_wtf.csrf import generate_csrf
 ###
 
 def token_required(f):
-    @wraps(f)
-    def _verify(*args, **kwargs):
-        auth_headers = request.headers.get('Authorization', '').split()
+  @wraps(f)
+  def decorated(*args, **kwargs):
+    auth = request.headers.get('Authorization', None)
+    if not auth:
+      return jsonify({'code': 'authorization_header_missing', 'description': 'Authorization header is expected'}), 401
 
-        invalid_msg = {
-            'message': 'Invalid token. Registeration and / or authentication required',
-            'authenticated': False
-        }
-        expired_msg = {
-            'message': 'Expired token. Reauthentication required.',
-            'authenticated': False
-        }
+    parts = auth.split()
 
-        if len(auth_headers) != 2:
-            return jsonify(invalid_msg), 401
+    if parts[0].lower() != 'bearer':
+      return jsonify({'code': 'invalid_header', 'description': 'Authorization header must start with Bearer'}), 401
+    elif len(parts) == 1:
+      return jsonify({'code': 'invalid_header', 'description': 'Token not found'}), 401
+    elif len(parts) > 2:
+      return jsonify({'code': 'invalid_header', 'description': 'Authorization header must be Bearer + \s + token'}), 401
 
-        try:
-            token = auth_headers[1]
-            data = jwt.decode(token, app.config['SECRET_KEY'])
-            user = Users.query.filter_by(email=data['sub']).first()
-            if not user:
-                raise RuntimeError('User not found')
-            return f(user, *args, **kwargs)
-        except jwt.ExpiredSignatureError:
-            # 401 is Unauthorized HTTP status code
-            return jsonify(expired_msg), 401
-        except (jwt.InvalidTokenError, Exception) as e:
-            print(e)
-            return jsonify(invalid_msg), 401
+    token = parts[1]
+    try:
+         payload = jwt.decode(token, app.config['SECRET_KEY'])
 
-    return _verify
+    except jwt.ExpiredSignatureError:
+        return jsonify({'code': 'token_expired', 'description': 'token is expired'}), 401
+    except jwt.DecodeError:
+        return jsonify({'code': 'token_invalid_signature', 'description': 'Token signature is invalid'}), 401
+
+    g.current_user = user = payload
+    return f(*args, **kwargs)
+
+  return decorated
+
+@app.route('/api/secure', methods=['GET'])
+@token_required
+def api_secure():
+    # This data was retrieved from the payload of the JSON Web Token
+    # take a look at the requires_auth decorator code to see how we decoded
+    # the information from the JWT.
+    user = g.current_user
+    return jsonify(data={"user": user}, message="Success")
 
 ###
 # Routing for your application.
@@ -63,35 +69,9 @@ def token_required(f):
 def index():
     return jsonify(message="This is the beginning of our API")
 
-# Login
-# @app.route('/api/auth/login', methods=['GET','POST'])
-# def login():
-#     if current_user.is_authenticated:
-#         return redirect('/api/users/' + str(current_user.id))
 
-#     form = LoginForm()
-#     if request.method == 'POST':
-#         if form.validate_on_submit():
-#             username = form.username.data
-#             password = form.password.data
-#             user = Users.query.filter_by(username=username).first()
 
-#             if user is not None and check_password_hash(user.password, password): 
-#                 remember_me = False
-
-#             if 'remember_me' in request.form:
-#                 remember_me = True
-#                 login_user(user, remember=remember_me)
-#                 return jsonify(message="Login successful", user=user.serialize(), redirect="/api/users/" + str(user.id))
-#             else:
-#                 login_user(user)
-#                 return jsonify(message="Login successful", user=user.serialize(), redirect="/api/users/" + str(user.id))
-#         else:
-#             return jsonify(message="Invalid username or password", errors=form_errors(form))
-
-#     return jsonify(message="Invalid request", user=None, redirect="/api/auth/login")
-
-#check this
+#Login
 @app.route('/api/auth/login', methods=['POST'])
 def login():
     form = LoginForm()
@@ -103,48 +83,13 @@ def login():
             if user is not None and check_password_hash(user.password, password):
                     payload = {'id': user.id, 'username': user.username}
                     token = jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
-                    response = {'token': token, 'message':"Token Generated and User Logged In"}
+                    response = {'token': token, 'message':"User Logged In"}
                     return jsonify(response), 200
             else:
                 return jsonify(errmessage="Incorrect username or password", authenticated=False, errors=form_errors(form)), 401
     return jsonify(errmessage="Invalid request", authenticated=False, errors=form_errors(form)), 400
 
-# Register
-# @app.route('/api/register', methods=['GET','POST'])
-# def register():
-#     form = RegisterForm()
-#     if request.method == 'POST':
-#         if form.validate_on_submit():
-#             username = form.username.data
-#             password = form.password.data
-#             name = form.name.data
-#             email = form.email.data
-#             location = form.location.data
-#             biography = form.biography.data
-#             photo = form.photo.data
-#             filename = secure_filename(photo.filename)
-#             photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-#             date_joined = format_date_joined(datetime.now())
-#             user = Users(username,password,name,email,location,biography,filename,date_joined)
-#             db.session.add(user)
-#             db.session.commit()
-
-#             data = {
-#                 username: username,
-#                 password: password,
-#                 name: name,
-#                 email: email,
-#                 location: location,
-#                 biography: biography,
-#                 photo: filename,
-#                 date_joined: date_joined
-#             }
-#             return jsonify({'message':"Registration successful"})
-#         else:
-#             return jsonify(message="Registration Unsuccessful", user=None, errors=form_errors(form))
-
-#     return jsonify(message="Invalid request", user=None)
-
+#Register
 @app.route('/api/register', methods=['GET','POST'])
 def register():
     form = RegisterForm()
@@ -178,41 +123,36 @@ def register():
 
 
 # Car Form and List
-@app.route('/api/cars', methods=['GET','POST'])
+@app.route('/api/cars/<user_id>', methods=['GET','POST'])
 def cars():
+    form = CarForm()
     if request.method == 'GET':
         cars = Cars.query.all()
         return jsonify(cars=[car.serialize() for car in cars])
     elif request.method == 'POST':
-        form = CarForm()
+        form.make.data = request.form['make']
+        form.model.data = request.form['model']
+        form.year.data = request.form['year']
+        form.color.data = request.form['color']
+        form.price.data = request.form['price']
+        form.photo.data = request.files['photo']
+        form.discription.data = request.form['discription']
         if form.validate_on_submit():
             make = form.make.data
             model = form.model.data
             year = form.year.data
             color = form.color.data
             price = form.price.data
-            image = form.image.data
-            filename = secure_filename(image.filename)
-            image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            description = form.description.data
+            photo = form.image.data
+            filename = secure_filename(photo.filename)
+            photo.save(os.path.join(app.config['CAR_IMG_UPLOAD_FOLDER'], filename))
+            discription = form.discription.data
             transmision = form.transmision.data
             car_type = form.car_type.data
-            car = Cars(make,model,year,color,price,filename,description,transmision,car_type)
+            car = Cars(make,model,year,color,price,filename,discription,transmision,car_type)
             db.session.add(car)
             db.session.commit()
-
-            data = {
-                make: make,
-                model: model,
-                year: year,
-                color: color,
-                price: price,
-                image: filename,
-                description: description,
-                transmision: transmision,
-                car_type: car_type
-            }
-            return jsonify(message="Car added successfully", car=data)
+            return jsonify(message="Car added successfully", errors=form_errors(form))
         else:
             return jsonify(message="Car not added successfully", car=None)
 
