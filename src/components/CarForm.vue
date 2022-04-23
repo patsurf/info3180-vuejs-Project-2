@@ -36,6 +36,7 @@
                     <option value="Pickup">Pickup</option>
                     <option value="Van">Van</option>
                     <option value="Wagon">Wagon</option>
+                    <option value="Sports_Car">Sports Car</option>
                 </select>
             </div>
             <div class="form-group col-md-4 ">
@@ -113,9 +114,12 @@ export default {
             .then(function(response) {
                 return response.json();
             })
-            .then(function(response){
-                console.log(response);
-                self.message = response.message;
+            .then(function(data){
+                console.log(data);
+                self.message = data.message;
+                if(data.errors.length > 0) {
+                    self.errorFlask = data.errors;
+                }
                 router.push('/explore');                
             })
             .catch(function(error) {

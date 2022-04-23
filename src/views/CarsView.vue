@@ -20,7 +20,7 @@ export default {
 <style>
 
 body{
-    background-color: #ececec;
+    background-color: #f3f4f6;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -29,7 +29,7 @@ body{
 form { 
     margin: 0 auto; 
     width: 750px;
-    box-shadow: 5px 5px 5px gray;
+    box-shadow: 2px 2px 10px gray;
 }
 
 [class*="form"]{

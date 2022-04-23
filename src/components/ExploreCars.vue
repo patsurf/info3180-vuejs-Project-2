@@ -5,11 +5,11 @@
         <li v-for="err in errorFlask " class="alert alert-danger" role="alert">{{ err }}</li>
         <div class="form-group col-md-4">
             <label for="make">Make</label>
-            <input type="text" class="form-control" id="make" name="make" v-model="make" required>
+            <input type="text" class="form-control" id="make" name="make" v-model="make">
         </div>
         <div class="form-group col-md-4 ">
             <label for="model">Model</label>
-            <input type="text" class="form-control" id="model" name="model" v-model="model" required>
+            <input type="text" class="form-control" id="model" name="model" v-model="model">
         </div>
         <br>
         <button type="submit" class="btn btn-primary">Search</button>
@@ -90,7 +90,11 @@ export default {
                 console.log(data.allCars);
                 self.message = data.message;
                 console.log(self.message);
+                if(data.errors.length > 0) {
+                    self.errorFlask = data.errors;
+                }
             }).catch(function (error) {
+                self.errorFlask = error.errors;
                 console.log(error);
             });
         },

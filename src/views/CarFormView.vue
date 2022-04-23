@@ -36,7 +36,7 @@ width: 750px;
 
 body {
     padding-top: 5rem;
-    background-color: #ececec;
+    background-color: #f3f4f6;
 }
 
 label,input{

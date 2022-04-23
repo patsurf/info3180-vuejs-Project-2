@@ -32,6 +32,7 @@ export default{
   },
   created() {
     this.getCsrfToken();
+    this.checkLogin();
   },
   methods: {
     loginUser() {
@@ -53,9 +54,11 @@ export default{
         .then(function (data) {
             // display a success message
             if(data.token == ''){
+              self.message = data.errmessage;
               sessionStorage.setItem('token', null);
               sessionStorage.setItem('user_id', null);
               store.commit('check', false);
+              console.log('message', self.errmessage);
             }
             else{
               console.log(data);
@@ -66,13 +69,14 @@ export default{
               sessionStorage.setItem('user_id', self.user_id);
               sessionStorage.setItem('auth', true);
               store.commit('check', true);
+              router.push('/');  
             }
               console.log("message: ", self.message);
               console.log("token: ", self.token);
               console.log("user_id: ", self.user_id);
               console.log("status: ", store.state.check);
 
-              router.push('/');  
+              
 
         }).catch(function (error) {
             // display an error message
@@ -91,6 +95,16 @@ export default{
               console.log(data);
               self.csrfToken = data.csrf_token;
           })
+    },
+    checkLogin() {
+      let self = this;
+      if(sessionStorage.getItem('token') != null){
+        self.token = sessionStorage.getItem('token');
+        self.user_id = sessionStorage.getItem('user_id');
+        self.message = 'You are logged in';
+        store.commit('check', true);
+        router.push('/');
+      }
     }
   }
 }
