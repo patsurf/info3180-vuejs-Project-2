@@ -29,11 +29,18 @@ export default{
               <RouterLink class="nav-link" to="/cars/new">Add Car</RouterLink>
             </li>
             <li class="nav-item">
-              <RouterLink class="nav-link" to="/logout">Logout</RouterLink>
+              <RouterLink class="nav-link" :to="{name: 'user-details'}" >My Profile</RouterLink>
+            </li>
+            <li class="nav-item mr-sm-2">
+              <RouterLink class="nav-link float-end" to="/logout">Logout</RouterLink>
             </li>
           </ul>
         </div>
     </nav>
  </header> 
 </template>
+
+<style>
+   
+</style>
 

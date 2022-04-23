@@ -52,6 +52,12 @@ const router = createRouter({
       name:'explore',
 
       component: () => import('../views/CarsView.vue')
+    },
+    {
+      path:'/user/' + sessionStorage.getItem('user_id'),
+      name:'user-details',
+
+      component: () => import('../views/UserDetailsView.vue')
     }
   ]
 })

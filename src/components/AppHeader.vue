@@ -36,4 +36,7 @@ export default {
 
 <style>
 /* Add any component specific styles here */
+.nav{
+  float: right;
+}
 </style>

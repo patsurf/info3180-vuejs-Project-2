@@ -7,7 +7,7 @@ This file creates your application.
 
 from datetime import datetime, timedelta
 from app import app, db
-from flask import render_template, request, jsonify, g, session, _request_ctx_stack
+from flask import render_template, request, jsonify, g, send_from_directory, session, _request_ctx_stack
 from flask_login import login_user, logout_user, current_user, login_required
 import os
 from app.models import Users, Cars, Favourites
@@ -18,36 +18,7 @@ import jwt
 from functools import wraps
 from flask_wtf.csrf import generate_csrf
 
-###
-# Authentication
-###
 
-def token_required(f):
-  @wraps(f)
-  def decorated(*args, **kwargs):
-    token = None
-
-    if 'Authorization' in request.headers:
-      token = request.headers['Authorization']
-
-    if not token:
-      return jsonify({'message' : 'Token is missing!'}), 401
-
-    try:
-      data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
-      current_user = Users.query.filter_by(id=data['user.id']).first()
-    except:
-      return jsonify({'message' : 'Token is invalid!'}), 401
-
-    return f(current_user, *args, **kwargs)
-
-  return decorated
-
-@app.route('/api/secure', methods=['GET'])
-@token_required
-def api_secure():
-    user = g.current_user
-    return jsonify(data={"user": user}, message="Success")
 
 ###
 # Routing for your application.
@@ -169,7 +140,7 @@ def car(id):
 # Favourites
 @app.route('/api/cars/<int:id>/favourite', methods=['POST'])
 @login_required
-@token_required
+# @token_required
 def favourite(id):
     if request.method == 'POST':
         car = Cars.query.get(id)
@@ -205,18 +176,27 @@ def search():
 
 # User Details
 @app.route('/api/users/<int:id>', methods=['GET'])
-@token_required
-@login_required
+# @token_required
+# @login_required
 def user(id):
     if request.method == 'GET':
-        user = Users.query.get(id)
-        return jsonify(user=user.serialize())
+        user = Users.query.filter_by(id=id).first()
+        user_id = user.id
+        name = user.name
+        username = user.username
+        email = user.email
+        location = user.location
+        biography = user.biography
+        date_joined = user.date_joined
+        profile_img = user.photo
+        message = "Sucessfully found profile"
+        return jsonify(user_id = user_id, name=name, username=username, email=email, location=location, biography=biography, date_joined=date_joined, profile_img=profile_img, message=message)
 
-    return jsonify(message="Invalid request", user=None)
+    return jsonify(message="Error", user=None)
 
 # User Favourites
 @app.route('/api/users/<int:id>/favourites', methods=['GET'])
-@token_required
+# @token_required
 @login_required
 def favourites(id):
     if request.method == 'GET':
@@ -239,6 +219,46 @@ def logout():
 @app.route('/api/csrf-token', methods=['GET'])
 def get_csrf():
     return jsonify({'csrf_token': generate_csrf()})
+
+# Get Profile images
+def get_profile_image(filename):
+    return send_from_directory(os.path.join(os.getcwd(),app.config['PROFILE_IMG_UPLOAD_FOLDER']), filename)
+
+#Get Car Images
+def get_car_image(filename):
+    return send_from_directory(os.path.join(os.getcwd(),app.config['CAR_IMG_UPLOAD_FOLDER']), filename)
+
+
+###
+# Authentication
+###
+
+# def token_required(f):
+#   @wraps(f)
+#   def decorated(*args, **kwargs):
+#     token = None
+
+#     if 'Authorization' in request.headers:
+#       token = request.headers['Authorization']
+
+#     if not token:
+#       return jsonify({'message' : 'Token is missing!'}), 401
+
+#     try:
+#       data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+#       current_user = Users.query.filter_by(id=data['user.id']).first()
+#     except:
+#       return jsonify({'message' : 'Token is invalid!'}), 401
+
+#     return f(current_user, *args, **kwargs)
+
+#   return decorated
+
+# @app.route('/api/secure', methods=['GET'])
+# @token_required
+# def api_secure():
+#     user = g.current_user
+#     return jsonify(data={"user": user}, message="Success")
 
 ###
 # The functions below should be applicable to all Flask apps.
