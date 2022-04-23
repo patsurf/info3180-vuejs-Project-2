@@ -32,7 +32,7 @@ export default{
   },
   created() {
     this.getCsrfToken();
-    this.checkLogin();
+    // this.checkLogin();
   },
   methods: {
     loginUser() {
@@ -96,16 +96,16 @@ export default{
               self.csrfToken = data.csrf_token;
           })
     },
-    checkLogin() {
-      let self = this;
-      if(sessionStorage.getItem('token') != null){
-        self.token = sessionStorage.getItem('token');
-        self.user_id = sessionStorage.getItem('user_id');
-        self.message = 'You are logged in';
-        store.commit('check', true);
-        router.push('/');
-      }
-    }
+    // checkLogin() {
+    //   let self = this;
+    //   if(sessionStorage.getItem('token') != null){
+    //     self.token = sessionStorage.getItem('token');
+    //     self.user_id = sessionStorage.getItem('user_id');
+    //     self.message = 'You are logged in';
+    //     store.commit('check', true);
+    //     router.push('/');
+    //   }
+    // }
   }
 }
 </script>

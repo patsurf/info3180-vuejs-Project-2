@@ -51,14 +51,15 @@ const store = createStore({
   
   
       }
-      if(to.path === '/login' && store.state.check === true){
-        console.log("was loggged in");
-        next('/');
+      // if(to.path === '/login' && sessionStorage.getItem('token') !== null){
+      //   console.log("was loggged in");
+      //   next('/');
   
   
-      }
+      // }
       
     });
+
 
 const app = createApp(App)
 .component('fa', FontAwesomeIcon)
