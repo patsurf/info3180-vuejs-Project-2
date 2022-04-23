@@ -64,6 +64,7 @@ export default{
               self.user_id = data.user_id;
               sessionStorage.setItem('token', self.token);
               sessionStorage.setItem('user_id', self.user_id);
+              sessionStorage.setItem('auth', true);
               store.commit('check', true);
             }
               console.log("message: ", self.message);
