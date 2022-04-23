@@ -1,13 +1,24 @@
 <template>
     <div>
-        {{user_name}}
-        {{user_id}}
-        {{email}}
-        {{location}}
-        {{biography}}
-        {{date_joined}}
-        <img :src="'/uploads/profile_photos/' + profile_image" alt="Profile Image">
+       <h2>Username </h2> {{user_name}}
     </div>
+    <div>
+        <h2>Name </h2>{{name}}
+    </div>
+    <div>
+        <h2>Email </h2>{{email}}
+    </div>
+    <div>
+        <h2>Location </h2>{{location}}
+    </div>
+    <div>
+        <h2>Biography </h2>{{biography}}
+    </div>
+    <div>
+        <h2>Date Joined </h2>{{date_joined}}
+    </div>
+        <img :src="'/uploads/profile_photos/' + profile_image" alt="Profile Image" id="profile_image">
+
 
 </template>
 <script>
@@ -17,6 +28,7 @@ import store from '@/main.js';
 export default {
     data(){
         return {
+            name: '',
             user_name: '',
             user_id: '',
             email: '',
@@ -58,6 +70,7 @@ export default {
                 .then(function (data) {
                     self.message = data.message;
                     self.user_id = data.user_id;
+                    self.name = data.name;
                     self.user_name = data.username;
                     self.email = data.email;
                     self.location = data.location;
@@ -82,4 +95,9 @@ export default {
 
 </script>
 <style>
+    #profile_image {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+    }
 </style>
