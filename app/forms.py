@@ -37,3 +37,7 @@ class CarForm(FlaskForm):
     transmission = StringField('Transmision', validators=[InputRequired()])
     car_type = StringField('Car Type', validators=[InputRequired()])
     user_id = StringField('User ID', validators=[InputRequired()])
+
+class SearchCars(FlaskForm):
+    make = StringField('Make', validators=[InputRequired()])
+    model = StringField('Model', validators=[InputRequired()])

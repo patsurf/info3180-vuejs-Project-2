@@ -5,10 +5,10 @@ from werkzeug.security import generate_password_hash
 class Cars(db.Model):
     __tablename__ = 'Cars' # set table name
     id = db.Column(db.Integer, primary_key=True)
-    description = db.Column(db.String(length=80), nullable=False)
+    description = db.Column(db.String(length=255), nullable=False)
     make = db.Column(db.String(length=255), nullable=False)
-    model = db.Column(db.String(length=80), nullable=False)
-    color = db.Column(db.String(length=80), nullable=False)
+    model = db.Column(db.String(length=180), nullable=False)
+    color = db.Column(db.String(length=120), nullable=False)
     year = db.Column(db.String(length=120), nullable=False)
     transmission = db.Column(db.String(length=200), nullable=False)
     car_type = db.Column(db.String(length=80), nullable=False)
@@ -34,7 +34,7 @@ class Cars(db.Model):
     
 class Favourites(db.Model):
     __tablename__ = 'Favourites'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     car_id = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, nullable=False)
     

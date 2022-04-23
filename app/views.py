@@ -13,7 +13,7 @@ import os
 from app.models import Users, Cars, Favourites
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
-from app.forms import LoginForm, CarForm, RegisterForm
+from app.forms import LoginForm, CarForm, RegisterForm, SearchCars
 import jwt
 from functools import wraps
 from flask_wtf.csrf import generate_csrf
@@ -93,8 +93,26 @@ def register():
 def cars():
     form = CarForm()
     if request.method == 'GET':
-        cars = Cars.query.all()
-        return jsonify(cars=[car.serialize() for car in cars])
+        cars = Cars.query.order_by(Cars.id).all()
+        allCars = []
+        message = "Here are all the cars"
+        for car in cars:
+            car_dict = {
+                'id': car.id,
+                'make': car.make,
+                'model': car.model,
+                'year': car.year,
+                'price': car.price,
+                'image': car.image,
+                'description': car.description,
+                'user_id': car.user_id,
+                'color': car.color,
+                'transmission': car.transmission,
+                'car_type': car.car_type
+            }
+            allCars.append(car_dict)
+        return jsonify(allCars = allCars, message = message)
+        
     elif request.method == 'POST':
         form.description.data = request.form['description']
         form.make.data = request.form['make']
@@ -133,46 +151,126 @@ def cars():
 def car(id):
     if request.method == 'GET':
         car = Cars.query.get(id)
-        return jsonify(car=car.serialize())
+        if car:
+            message = "Here is the car you requested"
+            make = car.make
+            model = car.model
+            year = car.year
+            price = car.price
+            image = car.image
+            description = car.description
+            transmission = car.transmission
+            car_type = car.car_type
+            user_id = car.user_id
+            color = car.color
+
+            return jsonify(message=message, make=make, model=model, year=year, price=price, image=image, description=description, transmission=transmission, car_type=car_type, user_id=user_id, color=color),200
 
     return jsonify(message="Car not found", car=None)
 
-# Favourites
+# Favourite
 @app.route('/api/cars/<int:id>/favourite', methods=['POST'])
-@login_required
+# @login_required
 # @token_required
 def favourite(id):
     if request.method == 'POST':
-        car = Cars.query.get(id)
-        user = Users.query.get(1)
-        favourite = Favourites(car,user)
+        user_id = request.form['user_id']
+        favourite = Favourites(id,user_id)
         db.session.add(favourite)
         db.session.commit()
-        return jsonify(message="Car added to favourites", car=car.serialize())
+        return jsonify(message="Car added to favourites")
 
     return jsonify(message="Invalid request", car=None)
 
 # Search
-@app.route('/api/search', methods=['GET'])
+@app.route('/api/search', methods=['GET','POST'])
 def search():
-    if request.method == 'GET':
-        make = request.args.get('make')
-        model = request.args.get('model')
-
+    form = SearchCars()
+    if request.method == 'POST':
+        make = form.make.data
+        model = form.model.data
         if make and model:
             cars = Cars.query.filter_by(make=make, model=model).all()
-            return jsonify(cars=[car.serialize() for car in cars])
+            allCars = []
+            message = "Here are all the cars"
+            for car in cars:
+                car_dict = {
+                    'id': car.id,
+                    'make': car.make,
+                    'model': car.model,
+                    'year': car.year,
+                    'price': car.price,
+                    'image': car.image,
+                    'description': car.description,
+                    'user_id': car.user_id,
+                    'color': car.color,
+                    'transmission': car.transmission,
+                    'car_type': car.car_type
+                }
+                allCars.append(car_dict)
+            return jsonify(allCars = allCars, message = message)
         elif make:
             cars = Cars.query.filter_by(make=make).all()
-            return jsonify(cars=[car.serialize() for car in cars])
+            allCars = []
+            message = "Here are all the cars"
+            for car in cars:
+                car_dict = {
+                    'id': car.id,
+                    'make': car.make,
+                    'model': car.model,
+                    'year': car.year,
+                    'price': car.price,
+                    'image': car.image,
+                    'description': car.description,
+                    'user_id': car.user_id,
+                    'color': car.color,
+                    'transmission': car.transmission,
+                    'car_type': car.car_type
+                }
+                allCars.append(car_dict)
+            return jsonify(allCars = allCars, message = message)
         elif model:
             cars = Cars.query.filter_by(model=model).all()
-            return jsonify(cars=[car.serialize() for car in cars])
+            allCars = []
+            message = "Here are all the cars"
+            for car in cars:
+                car_dict = {
+                    'id': car.id,
+                    'make': car.make,
+                    'model': car.model,
+                    'year': car.year,
+                    'price': car.price,
+                    'image': car.image,
+                    'description': car.description,
+                    'user_id': car.user_id,
+                    'color': car.color,
+                    'transmission': car.transmission,
+                    'car_type': car.car_type
+                }
+                allCars.append(car_dict)
+            return jsonify(allCars = allCars, message = message)
         else:
             cars = Cars.query.all()
-            return jsonify(cars=[car.serialize() for car in cars])
+            allCars = []
+            message = "Here are all the cars"
+            for car in cars:
+                car_dict = {
+                    'id': car.id,
+                    'make': car.make,
+                    'model': car.model,
+                    'year': car.year,
+                    'price': car.price,
+                    'image': car.image,
+                    'description': car.description,
+                    'user_id': car.user_id,
+                    'color': car.color,
+                    'transmission': car.transmission,
+                    'car_type': car.car_type
+                }
+                allCars.append(car_dict)
+            return jsonify(allCars = allCars, message = message)
 
-    return jsonify(message="Invalid request", cars=None)
+    return jsonify(message="Invalid request", cars=None, errors=form_errors(form))
 
 # User Details
 @app.route('/api/users/<int:id>', methods=['GET'])
@@ -197,7 +295,7 @@ def user(id):
 # User Favourites
 @app.route('/api/users/<int:id>/favourites', methods=['GET'])
 # @token_required
-@login_required
+# @login_required
 def favourites(id):
     if request.method == 'GET':
         user = Users.query.get(id)
@@ -221,12 +319,12 @@ def get_csrf():
     return jsonify({'csrf_token': generate_csrf()})
 
 # Get Profile images
-def get_profile_image(filename):
-    return send_from_directory(os.path.join(os.getcwd(),app.config['PROFILE_IMG_UPLOAD_FOLDER']), filename)
+# def get_profile_image(filename):
+#     return send_from_directory(os.path.join(os.getcwd(),app.config['PROFILE_IMG_UPLOAD_FOLDER']), filename)
 
-#Get Car Images
-def get_car_image(filename):
-    return send_from_directory(os.path.join(os.getcwd(),app.config['CAR_IMG_UPLOAD_FOLDER']), filename)
+# #Get Car Images
+# def get_car_image(filename):
+#     return send_from_directory(os.path.join(os.getcwd(),app.config['CAR_IMG_UPLOAD_FOLDER']), filename)
 
 
 ###
