@@ -46,22 +46,24 @@
                 </select>
             </div>
             <div class="form-group col-md-10 ">
+                <br>
                 <label for="description">Description</label>
                 <textarea type="description" class="form-control" id="description" v-model="description" name="description"></textarea>
             </div>
-        </div>
-        <br>
-        <label for="image">Upload Photo</label>
-        <br>
-        <div class="form-group">
-            <input type="file" id="image" class="form-control-file" name="image"
-                @change="fileSelected" required>
-            <input type="hidden" id="user_id" class="form-control" name="user_id" :value="user_id">
+            <br>
+            <label for="image">Upload Photo</label>
+            <br>
+            <div class="form-group">
+                <input type="file" id="image" class="form-control-file" name="image"
+                    @change="fileSelected" required>
+                <input type="hidden" id="user_id" class="form-control" name="user_id" :value="user_id">
             
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary" @click.prevent="newCar">Register</button>
+            <!-- <button type="reset" name="reset" class="btn btn-warning">Undo all</button> -->
+
         </div>
-        <br>
-        <button type="submit" class="btn btn-primary" @click.prevent="newCar">Save</button>
-        <button type="reset" name="reset" class="btn btn-warning">Undo all</button>
     </form>
 </template>
 

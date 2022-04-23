@@ -13,4 +13,26 @@
     }
 </script>
 <style>
+
+body{
+    background-color:  #ececec;
+}
+
+[class*="profile-card"]{
+    background-color: #ffffff;
+	border-radius: 5px;
+	padding: 10px;
+    height: ;
+    
+    
+}
+
+[class*="profile-card"]{
+    list-style: none;
+}
+
+[id*="profile_image"]{
+    float: left;
+}
+
 </style>

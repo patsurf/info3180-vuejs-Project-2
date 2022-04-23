@@ -1,23 +1,47 @@
 <template>
-    <div>
-       <h2>Username </h2> {{user_name}}
-    </div>
-    <div>
+    <!-- <div class="profile-card">
         <h2>Name </h2>{{name}}
     </div>
-    <div>
+    <div class="profile-card">
+       <h2>Username </h2> {{user_name}}
+    </div>
+    <div class="profile-card">
         <h2>Email </h2>{{email}}
     </div>
-    <div>
+    <div class="profile-card">
         <h2>Location </h2>{{location}}
     </div>
-    <div>
+    <div class="profile-card">
         <h2>Biography </h2>{{biography}}
     </div>
-    <div>
+    <div class="profile-card">
         <h2>Date Joined </h2>{{date_joined}}
     </div>
+    <div class="profile-card">
         <img :src="'/uploads/profile_photos/' + profile_image" alt="Profile Image" id="profile_image">
+    </div> -->
+
+    <div class="profile-card">
+        <img :src="'/uploads/profile_photos/' + profile_image" alt="Profile Image" id="profile_image">
+        <ul>
+            <li>
+                <h2>Name </h2>{{name}}
+            </li>
+            <li>
+                <h2>Username </h2> {{user_name}}
+            </li>
+            <li>
+               <h2>Email </h2>{{email}}
+            </li>
+            <li>
+                <h2>Biography </h2>{{biography}}
+            </li>
+            <li>
+                <h2>Date Joined </h2>{{date_joined}}
+            </li>
+        </ul>
+    </div>
+    
 
 
 </template>

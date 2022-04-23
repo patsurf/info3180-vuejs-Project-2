@@ -23,15 +23,15 @@
             <label for="location">Location</label>
             <input type="text" id="location" name="location" class="form-control" placeholder="Location" required>
         </div>
-        <div class="form-group">
+        <div class="form-groupbio">
             <label for="biography">Biography</label>
             <textarea id="biography" name="biography" class="form-control" placeholder="Biography" required></textarea>
         </div>
         <div class="form-group">
-            <br><label for="photo">Profile Picture</label><br>
+            <br><label for="photo">Profile Picture</label>
            <input type="file" id="photo" class="form-control-file" name="photo" placeholder="Profile Picture" @change="fileSelected" required>
         </div>
-        <br><button class="btn btn-lg btn-primary btn-block  bg-dark" type="submit">Register</button> 
+        <br><button class="btn btn-lg btn-primary" type="submit">Register</button> 
     </form>
 </template>
 
