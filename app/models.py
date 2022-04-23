@@ -8,22 +8,22 @@ class Cars(db.Model):
     description = db.Column(db.String(length=80), nullable=False)
     make = db.Column(db.String(length=255), nullable=False)
     model = db.Column(db.String(length=80), nullable=False)
-    colour = db.Column(db.String(length=80), nullable=False)
+    color = db.Column(db.String(length=80), nullable=False)
     year = db.Column(db.String(length=120), nullable=False)
-    transmision = db.Column(db.String(length=200), nullable=False)
+    transmission = db.Column(db.String(length=200), nullable=False)
     car_type = db.Column(db.String(length=80), nullable=False)
     price = db.Column(db.Float(), nullable=False)
     image = db.Column(db.String(length=80), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('Users.id'), nullable=False)
+    user_id = db.Column(db.Integer, nullable=False)
 
     
-    def __init__(self,description,make,model,colour,year,transmision,car_type,price,image,user_id):
+    def __init__(self,description,make,model,color,year,transmission,car_type,price,image,user_id):
         self.description = description
         self.make = make
         self.model = model
-        self.colour = colour
+        self.color = color
         self.year = year
-        self.transmision = transmision
+        self.transmission = transmission
         self.car_type = car_type
         self.price = price
         self.image = image
@@ -35,8 +35,8 @@ class Cars(db.Model):
 class Favourites(db.Model):
     __tablename__ = 'Favourites'
     id = db.Column(db.Integer, primary_key=True)
-    car_id = db.Column(db.Integer, db.ForeignKey('Cars.id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('Users.id'), nullable=False)
+    car_id = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.Integer, nullable=False)
     
     def __init__(self,car_id,user_id):
         self.car_id = car_id

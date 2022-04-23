@@ -25,30 +25,21 @@ from flask_wtf.csrf import generate_csrf
 def token_required(f):
   @wraps(f)
   def decorated(*args, **kwargs):
-    auth = request.headers.get('Authorization', None)
-    if not auth:
-      return jsonify({'code': 'authorization_header_missing', 'description': 'Authorization header is expected'}), 401
+    token = None
 
-    parts = auth.split()
+    if 'Authorization' in request.headers:
+      token = request.headers['Authorization']
 
-    if parts[0].lower() != 'bearer':
-      return jsonify({'code': 'invalid_header', 'description': 'Authorization header must start with Bearer'}), 401
-    elif len(parts) == 1:
-      return jsonify({'code': 'invalid_header', 'description': 'Token not found'}), 401
-    elif len(parts) > 2:
-      return jsonify({'code': 'invalid_header', 'description': 'Authorization header must be Bearer + \s + token'}), 401
+    if not token:
+      return jsonify({'message' : 'Token is missing!'}), 401
 
-    token = parts[1]
     try:
-         payload = jwt.decode(token, app.config['SECRET_KEY'])
+      data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+      current_user = Users.query.filter_by(id=data['user.id']).first()
+    except:
+      return jsonify({'message' : 'Token is invalid!'}), 401
 
-    except jwt.ExpiredSignatureError:
-        return jsonify({'code': 'token_expired', 'description': 'token is expired'}), 401
-    except jwt.DecodeError:
-        return jsonify({'code': 'token_invalid_signature', 'description': 'Token signature is invalid'}), 401
-
-    g.current_user = user = payload
-    return f(*args, **kwargs)
+    return f(current_user, *args, **kwargs)
 
   return decorated
 
@@ -80,11 +71,18 @@ def login():
             if user is not None and check_password_hash(user.password, password):
                     payload = {'id': user.id, 'username': user.username}
                     token = jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
-                    response = {'token': token, 'message':"User Logged In"}
+                    auth = True
+                    response = {'token': token, 'message':"User Logged In", 'auth': auth, 'user_id': user.id}
                     return jsonify(response), 200
             else:
-                return jsonify(errmessage="Incorrect username or password", authenticated=False, errors=form_errors(form)), 401
-    return jsonify(errmessage="Invalid request", authenticated=False, errors=form_errors(form)), 400
+                auth = False
+                token = ''
+                payload = {'id': '', 'username': ''}
+                response = {'token': token, 'message':"Invalid Credentials", 'auth': auth}
+                return jsonify(response), 401
+    return jsonify(response), 401
+
+
 
 #Register
 @app.route('/api/register', methods=['GET','POST'])
@@ -134,6 +132,9 @@ def cars():
         form.color.data = request.form['color']
         form.price.data = request.form['price']
         form.image.data = request.files['image']
+        form.car_type.data = request.form['car_type']
+        form.transmission.data = request.form['transmission']
+        form.user_id.data = request.form.get('user_id', type=int)
         if form.validate_on_submit():
             make = form.make.data
             model = form.model.data
@@ -141,17 +142,18 @@ def cars():
             color = form.color.data
             price = form.price.data
             image = form.image.data
+            description = form.description.data
+            transmission = form.transmission.data
+            car_type = form.car_type.data
+            user_id = form.user_id.data
             filename = secure_filename(image.filename)
             image.save(os.path.join(app.config['CAR_IMG_UPLOAD_FOLDER'], filename))
-            description = form.description.data
-            transmision = form.transmision.data
-            car_type = form.car_type.data
-            car = Cars(make,model,year,color,price,filename,description,transmision,car_type)
+            car = Cars(description,make,model,color,year,transmission,car_type,price,filename,user_id)
             db.session.add(car)
             db.session.commit()
             return jsonify(message="Car added successfully", errors=form_errors(form))
         else:
-            return jsonify(message="Car not added successfully", car=None)
+            return jsonify(message="Car not added successfully", car=None, errors=form_errors(form))
 
     return jsonify(message="Invalid request", car=None)
 

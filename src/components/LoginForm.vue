@@ -5,11 +5,11 @@
       <h1 class="h3 mb-3 font-weight-normal text-center">Log in to your account</h1>
       <div class="form-group col-md-4">
         <label for="username" class="sr-only">Username</label>
-      <input type="username" id="username" name="username" class="form-control" placeholder="Username" required>
+      <input type="username" id="username" name="username" class="form-control" v-model="username" placeholder="Username" required>
       </div>
       <div class="form-group col-md-4">
         <label for="password" class="sr-only">Password</label>
-        <input type="password" id="password" name="password" class="form-control" placeholder="Password" required> <br>
+        <input type="password" id="password" name="password" class="form-control" v-model="password" placeholder="Password" required> <br>
       </div> 
       <button class="btn btn-lg btn-primary btn-block  bg-dark" type="submit">Sign in</button>
     </form>
@@ -17,14 +17,17 @@
 
 <script>
 import router from "../router";
+import store from '@/main.js'; 
 
  
 export default{
   data() {
       return {
         message: '',
-        token: '',
-        errorFlask: []
+        csrf_token: '',
+        errorFlask: [],
+        username: '',
+        password: ''
       }
   },
   created() {
@@ -41,7 +44,6 @@ export default{
         body: form_data,
 
         headers: {
-          "Authorization": 'Bearer ' + self.token,
           'X-CSRF-TOKEN': this.csrfToken
         }
       })
@@ -50,12 +52,25 @@ export default{
         })
         .then(function (data) {
             // display a success message
+            if(data.token == ''){
+              sessionStorage.setItem('token', null);
+              sessionStorage.setItem('user_id', null);
+              store.commit('check', false);
+            }
+            else{
               console.log(data);
               self.message = data.message;
-              console.log(self.message);
               self.token = data.token;
-              console.log(self.token);
+              self.user_id = data.user_id;
               sessionStorage.setItem('token', self.token);
+              sessionStorage.setItem('user_id', self.user_id);
+              store.commit('check', true);
+            }
+              console.log("message: ", self.message);
+              console.log("token: ", self.token);
+              console.log("user_id: ", self.user_id);
+              console.log("status: ", store.state.check);
+
               router.push('/');  
 
         }).catch(function (error) {
@@ -65,6 +80,7 @@ export default{
         });
     },
     getCsrfToken() {
+      console.log("status: ", this.$store.state.check);
       let self = this;
       fetch("/api/csrf-token")
           .then((response) => {

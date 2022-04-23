@@ -1,7 +1,7 @@
 # Add any form classes for Flask-WTF here
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed, FileRequired
-from wtforms import StringField, PasswordField, BooleanField, FloatField, DateField, DateTimeField
+from wtforms import StringField, PasswordField, BooleanField, FloatField, DateField, DateTimeField, IntegerField
 from wtforms.validators import InputRequired, DataRequired
 
 
@@ -15,7 +15,7 @@ class RegisterForm(FlaskForm):
     biography = StringField('Biography', validators=[InputRequired()])      
     photo = FileField('Profile Picture', validators=[
         FileRequired(), 
-        FileAllowed(['jpg', 'png'], 'Images only!')
+        FileAllowed(['jpeg','jpg', 'png'], 'Images only!')
     ])
 
 class LoginForm(FlaskForm):
@@ -31,8 +31,9 @@ class CarForm(FlaskForm):
     price = FloatField('Price', validators=[InputRequired()])
     image = FileField('Image', validators=[
         FileRequired(),
-        FileAllowed(['jpg', 'png', 'gif'], 'Images only!')
+        FileAllowed(['jpeg','jpg', 'png', 'gif'], 'Images only!')
     ])
     description = StringField('Description', validators=[InputRequired()])
-    transmision = StringField('Transmision', validators=[InputRequired()])
+    transmission = StringField('Transmision', validators=[InputRequired()])
     car_type = StringField('Car Type', validators=[InputRequired()])
+    user_id = StringField('User ID', validators=[InputRequired()])
