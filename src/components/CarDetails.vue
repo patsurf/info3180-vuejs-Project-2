@@ -1,41 +1,41 @@
 <template>
     <div v-if="message" class="alert alert-success" role="alert">{{ message }}</div>
-    <div>
-        <h2>Make</h2> {{make}}
+    <li v-for="err in errorFlask " class="alert alert-danger" role="alert">{{ err }}</li>
+    <div class="column">
+        <img id="carDetailsIMG" :src="'/uploads/car_photos/'+ image" alt="car image">
     </div>
-    <div>
-        <h2>Model</h2> {{model}}
-    </div>
-    <div>
-        <h2>Year</h2> {{year}}
-    </div>
-    <div>
-        <h2>Color</h2> {{color}}
-    </div>
-    <div>
-        <h2>Price</h2> {{price}}
-    </div>
-    <div>
-        <h2>Car Type</h2> {{car_type}}
-    </div>
-    <div>
-        <h2>Transmission</h2> {{transmission}}
-    </div>
-    <div>
-        <h2>Description</h2> {{description}}
-    </div>
-    <div>
-        <h2>Image</h2> <img :src="'/uploads/car_photos/'+ image" alt="car image" width="200" height="200">
-    </div>
-    <br>
-    <div>
-        <form class="form" @submit.prevent="addFavorite" id="addFav" method="POST" enctype="multipart/form-data">
-            <input type="hidden" id="user_id" class="form-control" name="user_id" :value="user_id">
-            <button type="submit" class="btn btn-primary">Add to Favorites</button>
-        </form>
-
-
-
+    <!-- <div class="Cartext" style="float:left; padding: 20px;"> -->
+    <div class="Cartext column" style="padding: 20px">
+        <h1>{{make}}</h1> 
+        <h5>{{model}}</h5>
+        <br>
+        <br>
+        <p style="color: gray;">{{description}}</p>
+        <div class="row">
+            <div class="column">
+                <p>Color <span style="font-weight: bold;">{{color}}</span></p>
+            </div>
+            <div class="column">
+                <p>Body Type  <span style="font-weight: bold;">{{car_type}}</span></p> 
+            </div>
+        </div>
+        <div class="row">
+            <div class="column">
+                <p>Price <span style="font-weight: bold;">${{price}} </span></p> 
+            </div>
+            <div class="column">
+                <p>Transmission <span style="font-weight: bold;">{{transmission}}</span></p> 
+            </div>
+        </div>
+        <div class="row">
+            <div class="column">
+                <button type="submit" class="btn btn-success" style="color: white;">Email Owner</button>
+                <form class="form" @submit.prevent="addFavorite" id="addFav" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" id="user_id" class="form-control" name="user_id" :value="user_id">
+                    <button type="submit" class="btn" style="color: red;"><fa icon="heart"/></button>
+                </form>          
+           </div>
+        </div>
     </div>
 </template>
 <script>
@@ -60,6 +60,13 @@ export default {
             car_type: '',
             description: ''
         }
+    },
+    computed: {
+        price: function () {
+            let dollarUS = Intl.NumberFormat('en-US').format(this.price);
+            return dollarUS;
+        }
+
     },
     created() {
         this.getCsrfToken();

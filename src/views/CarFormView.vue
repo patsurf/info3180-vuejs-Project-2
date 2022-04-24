@@ -39,6 +39,17 @@ body {
     background-color: #f3f4f6;
 }
 
+#RegisButton {
+	margin-top: 10px;
+	background-color: #0fb881;
+	color: white;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 30px;
+	padding-right: 30px;
+	border-radius: 5px;
+}
+
 label,input{
   display:flex;
   flex-direction:column;
@@ -67,10 +78,10 @@ label,input{
   	
 }
 
-[class*="btn btn-primary"]{
+/* [class*="btn btn-primary"]{
 	background-color: rgb(45, 242, 140);
 	border-color: rgb(45, 242, 140);
 	width: 150px;
-}
+} */
 
 </style>

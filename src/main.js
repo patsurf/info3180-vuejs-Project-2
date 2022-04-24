@@ -32,9 +32,9 @@ const store = createStore({
   router.beforeEach((to, from, next) => {
       console.log('State: ', store.state.check)
       if(to.path === '/new-car' && store.state.check === ''){
-        next('/login')
+        next('/home')
       }else if(to.path === '/explore' && store.state.check === ''){
-        next('/login')
+        next('/home')
       }
       else{
         next()

@@ -2,7 +2,6 @@
     <form class="form-signin" @submit.prevent="registerUser" id="registerForm" method="POST" enctype="multipart/form-data">
         <div v-if="message" class="alert alert-success" role="alert">{{ message }}</div>
         <li v-for ="err in errorFlask " class="alert alert-danger" role="alert">{{ err }}</li>
-        <h1 class="h3 mb-3 font-weight-normal">Register New User</h1>
         <div class="form-group">
             <label for="username">Username</label>
             <input type="text" id="username" name="username" class="form-control" placeholder="Username" required>
@@ -29,11 +28,15 @@
         </div>
         <div class="form-group">
             <br><label for="photo">Profile Picture</label>
-           <input type="file" id="photo" class="form-control-file" name="photo" placeholder="Profile Picture" @change="fileSelected" required>
+           <input type="file" id="photo" class="form-control-file" name="photo" placeholder="Profile Picture" @change="fileSelected" required> <br>
         </div>
-        <br><button class="btn btn-lg btn-primary" type="submit">Register</button> 
+        <br><button class="btn btn-lg" id='RegisButton' type="submit">Register</button> 
     </form>
 </template>
+
+<style>
+
+</style>
 
 <script>
 import router from "../router";

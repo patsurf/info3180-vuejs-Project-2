@@ -300,25 +300,48 @@ def favourites(id):
         user_id = user.id
         favMessage = "Sucessfully found profile"
         favourites = Favourites.query.filter_by(user_id=id).all()
-        allFavourites = []
-        for favourite in favourites:
-            car = Cars.query.filter_by(id=favourite.car_id).first()
-            car_dict = {
-                'id': car.id,
-                'make': car.make,
-                'model': car.model,
-                'year': car.year,
-                'price': car.price,
-                'image': car.image,
-                'description': car.description,
-                'user_id': car.user_id,
-                'color': car.color,
-                'transmission': car.transmission,
-                'car_type': car.car_type
-            }
-            allFavourites.append(car_dict)
-        return jsonify(allFavourites=allFavourites, favMessage=favMessage),200
-
+        # check if user has more than 3 favourites if yes return only 3
+        if len(favourites) > 3:
+            favourites = favourites[:3]
+            allFavourites = []
+            for favourite in favourites:
+                car = Cars.query.filter_by(id=favourite.car_id).first()
+                car_dict = {
+                    'id': car.id,
+                    'make': car.make,
+                    'model': car.model,
+                    'year': car.year,
+                    'price': car.price,
+                    'image': car.image,
+                    'description': car.description,
+                    'user_id': car.user_id,
+                    'color': car.color,
+                    'transmission': car.transmission,
+                    'car_type': car.car_type
+                }
+                allFavourites.append(car_dict)
+            return jsonify(allFavourites=allFavourites, favMessage=favMessage),200
+        # if user has less than 3 favourites return all
+        else:
+            favourites = Favourites.query.filter_by(user_id=id).all()
+            allFavourites = []
+            for favourite in favourites:
+                car = Cars.query.filter_by(id=favourite.car_id).first()
+                car_dict = {
+                    'id': car.id,
+                    'make': car.make,
+                    'model': car.model,
+                    'year': car.year,
+                    'price': car.price,
+                    'image': car.image,
+                    'description': car.description,
+                    'user_id': car.user_id,
+                    'color': car.color,
+                    'transmission': car.transmission,
+                    'car_type': car.car_type
+                }
+                allFavourites.append(car_dict)
+            return jsonify(allFavourites=allFavourites, favMessage=favMessage),200
     return jsonify(message="Invalid request", favourites=None)
 
 # Date Joined Editor

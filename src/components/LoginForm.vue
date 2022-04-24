@@ -1,17 +1,18 @@
 <template>
-    <h1 class="h3 mb-3 font-weight-normal text-center">Log in to your account</h1>
     <form class="form-signin" @submit.prevent="loginUser" id="loginForm" method="POST" enctype="multipart/form-data">
       <div v-if="message" class="alert alert-success" role="alert">{{ message }}</div>
       <li v-for ="err in errorFlask " class="alert alert-danger" role="alert">{{ err }}</li>
-      <div class="form-group col-md-4">
-        <label for="username" class="sr-only">Username</label>
-        <input type="username" id="username" name="username" class="form-control" v-model="username" placeholder="Username" required>
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="username" id="username" name="username" class="form-control" v-model="username" required>
       </div>
-      <div class="form-group col-md-4">
-        <label for="password" class="sr-only">Password</label>
-        <input type="password" id="password" name="password" class="form-control" v-model="password" placeholder="Password" required> <br>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" class="form-control" v-model="password" required> <br>
       </div> 
-      <button class="btn btn-lg btn-primary" type="submit">Login</button>
+      <footer>
+        <button class="btn btn-lg btn-block" id="login" type="submit">Login</button>
+      </footer>
     </form>
 </template>
 

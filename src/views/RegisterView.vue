@@ -16,7 +16,10 @@ export default {
 
 <template>
 		<div class="container">
-    	 <RegisterForm></RegisterForm>
+			<h1 class="h3 mb-3 font-weight-normal">Register New User</h1>
+			<div class="regisForm">
+				<RegisterForm></RegisterForm>		
+			</div>
 		</div>
  
 
@@ -27,15 +30,19 @@ export default {
 
 <style>
 
-form { 
+.container { 
 	margin: 0 auto; 
-	width: 750px;
-	background-color: #ffffff;
+	width: 850px;
+	/* background-color: #ffffff; */
 	border-radius: 10px;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    padding-left: 40px;
-    width: 800px;
+	padding: 25px;
+    /* width: 800px; */
+}
+
+.regisForm{
+	background-color: #ffffff;
+	padding: 40px;
+	border-radius: 20px;
 }
 
 body {
@@ -61,11 +68,20 @@ body {
 	
 }
 
-[class*="btn btn-lg btn-primary"]{
-	background-color: rgb(45, 242, 140);
-	border-color: rgb(45, 242, 140);
-	width: 150px;
-	
+
+#RegisButton {
+	margin-top: 10px;
+	background-color: #0fb881;
+	color: white;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 30px;
+	padding-right: 30px;
+	border-radius: 5px;
+}
+
+#description textarea{
+	width: 300px;
 }
 
 </style>

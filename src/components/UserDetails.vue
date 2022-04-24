@@ -1,34 +1,44 @@
 <template>
-    <div class="profile-card">
-        <img :src="'/uploads/profile_photos/' + profile_image" alt="Profile Image" id="profile_image">
-        <ul>
-            <li>
-                <h2>Name </h2>{{name}}
-            </li>
-            <li>
-                <h2>Username </h2> {{user_name}}
-            </li>
-            <li>
-               <h2>Email </h2>{{email}}
-            </li>
-            <li>
-                <h2>Biography </h2>{{biography}}
-            </li>
-            <li>
-                <h2>Date Joined </h2>{{date_joined}}
-            </li>
-        </ul>
+    <div class="profile-card row">
+        <div class="column">
+            <img :src="'/uploads/profile_photos/' + profile_image" alt="Profile Image" id="profile_image">  
+        </div>
+        <div class="column">
+            <div>
+                <ul class="profile-card-list">
+                    <li>
+                        <h2 class="profile-card-value">{{ name }}</h2>
+                    </li>
+                    <li>
+                        <h5 class="profile-card-value">@{{ user_name }}</h5>
+                    </li>
+                    <li>
+                        <p class="profile-card-value">{{ biography }}</p>
+                    </li>
+                    <li>
+                        <p class="profile-card-key">Email<span class="profile-card-value">{{ email }}</span></p>
+                    </li>
+                    <li>
+                        <p class="profile-card-key">Location<span class="profile-card-value">{{ location }}</span></p>
+                    </li>
+                    <li>
+                        <p class="profile-card-key">Joined<span class="profile-card-value">{{ date_joined }}</span></p>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
-    <div>
+    <br>
+    <br>
+    <div class="row">
         <h2>Favourites</h2>
         <div class="card-deck">
             <div v-for="car in Favourites" class="card">
-                <img class="card-img-top" :src="'/uploads/car_photos/' + car.image" alt="Card image cap">
+               <img class="card-img-top" id="car_images" :src="'/uploads/car_photos/' + car.image" alt="Card image cap">
                 <div class="card-body">
-                    <h5 class="card-title">{{ car.make }} {{ car.model }}</h5>
-                    <p class="card-text">{{ car.year }}</p>
-                    <p class="card-text">{{ car.price }}</p>
-                    <a :href="'/cars/' + car.id" class="btn btn-primary">View more details</a>
+                    <h5 class="card-title">{{ car.year }} {{ car.make }}<button class="tags"><fa icon="tags"/> ${{ car.price }}</button></h5>
+                    <p class="card-text" style="color:gray;">{{ car.model }}</p>
+                    <button class=" View btn btn-primary"> <a id="id" :href="'/cars/' + car.id" >View more details</a></button>
                 </div>
             </div>
         </div>

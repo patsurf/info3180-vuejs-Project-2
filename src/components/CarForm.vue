@@ -42,13 +42,13 @@
             <div class="form-group col-md-4 ">
                 <label for="transmission">Transmission</label>
                 <select name="transmission" id="transmission" v-model="transmission" required>
-                    <option value="automatic">Automatic</option>
-                    <option value="manual">Manual</option>
+                    <option value="Automatic">Automatic</option>
+                    <option value="Manual">Manual</option>
                 </select>
             </div>
             <div class="form-group col-md-10 ">
                 <br>
-                <label for="description">Description</label>
+                <label id="carformLabel" for="description">Description</label>
                 <textarea type="description" class="form-control" id="description" v-model="description" name="description"></textarea>
             </div>
             <br>
@@ -61,7 +61,7 @@
             
             </div>
             <br>
-            <button type="submit" class="btn btn-primary" @click.prevent="newCar">Register</button>
+            <button type="submit" class="btn btn-lg" id="RegisButton" @click.prevent="newCar">Register</button>
             <!-- <button type="reset" name="reset" class="btn btn-warning">Undo all</button> -->
 
         </div>

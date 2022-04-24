@@ -1,13 +1,14 @@
 <template>
-    <h3>Explore Cars</h3>
+    <h1>Explore</h1>
+    <br>
+
+    <div class="alert alert alert-warning alert-dismissible alert-success" role="alert">If the list of cars appear to be jumbled kindly refresh your page. Thank You</div>'
     <form class="form" @submit.prevent="carSearch" id="CarSearchForm" method="POST" enctype="multipart/form-data">
         <!-- <div v-if="message" class="alert alert-success" role="alert">{{ message }}</div> -->
         <li v-for="err in errorFlask " class="alert alert-danger" role="alert">{{ err }}</li>
-        <div class="form-group col-md-4">
+        <div class="CSF form-group col-md-4">
             <label for="make">Make</label>
             <input type="text" class="form-control" id="make" name="make" v-model="make">
-        </div>
-        <div class="form-group col-md-4 ">
             <label for="model">Model</label>
             <input type="text" class="form-control" id="model" name="model" v-model="model">
         </div>
@@ -18,14 +19,13 @@
     <br>
     <!-- If no search is done show cards -->
     <div v-if="!carSearch">
-        <div class="card-deck">
+        <div class="card-deck ">
             <div v-for="car in cars" class="card">
-                <img class="card-img-top" :src="'/uploads/car_photos/' + car.image" alt="Card image cap">
+                <img class="card-img-top" id="car_images" :src="'/uploads/car_photos/' + car.image" alt="Card image cap">
                 <div class="card-body">
-                    <h5 class="card-title">{{ car.make }} {{ car.model }}</h5>
-                    <p class="card-text">{{ car.year }}</p>
-                    <p class="card-text">{{ car.price }}</p>
-                    <a :href="'/cars/' + car.id" class="btn btn-primary">View more details</a>
+                    <h5 class="card-title">{{ car.year }} {{ car.make }}<button class="tags"><fa icon="tags"/> ${{ car.price }}</button></h5>
+                    <p class="card-text">{{ car.model }}</p>
+                    <button class=" View btn btn-primary"> <a id="id" :href="'/cars/' + car.id">View more details</a></button>
                 </div>
             </div>
         </div>
@@ -34,12 +34,11 @@
     <div v-else>
         <div class="card-deck">
             <div v-for="car in cars" class="card">
-                <img class="card-img-top" :src="'/uploads/car_photos/' + car.image" alt="Card image cap">
+                <img class="card-img-top" id="car_images" :src="'/uploads/car_photos/' + car.image" alt="Card image cap">
                 <div class="card-body">
-                    <h5 class="card-title">{{ car.make }} {{ car.model }}</h5>
-                    <p class="card-text">{{ car.year }}</p>
-                    <p class="card-text">{{ car.price }}</p>
-                    <a :href="'/cars/' + car.id" class="btn btn-primary">View more details</a>
+                    <h5 class="card-title">{{ car.year }} {{ car.make }}<button class="tags"><fa icon="tags"/> ${{ car.price }}</button></h5>
+                    <p class="card-text">{{ car.model }}</p>
+                    <button class="View btn btn-primary"> <a id="id" :href="'/cars/' + car.id" >View more details</a></button>
                 </div>
             </div>
         </div>
@@ -48,6 +47,11 @@
 <script>
 import router from "../router";
 import store from '@/main.js';
+
+// refresh page on load
+// window.onload = function() {
+//     location.reload();
+// }
 
 export default {
     data() {
@@ -65,6 +69,7 @@ export default {
             cars: []
         }
     },
+    
 
     created() {
         this.getCsrfToken();

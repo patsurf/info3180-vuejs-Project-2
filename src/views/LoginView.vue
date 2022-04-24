@@ -17,6 +17,7 @@ export default {
 
 <template>
 	<div class="container">
+		<h1 class="h3 mb-3 font-weight-normal text-center">Login to your account</h1> <br>
     	 <LoginForm></LoginForm>
 	</div>
 
@@ -30,26 +31,39 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
-	height: 600px;
+
 }
 
-form { 
+#login{
+	width: 100%;
+	background-color: #0fb881;
+	color: #fff;
+}
+
+.container{
+	margin-top: 100px;
+	width: 500px;
+}
+
+#loginForm { 
 	margin: 0 auto; 
-	box-shadow: 5px 5px 5px gray;
+	box-shadow: 1px 5px 15px gray;
 }
 
 [class*="form-signin"]{
 	background-color: #ffffff;
-	border-radius: 5px;
-	padding: 10px;
+	border-radius: 15px;
+	padding: 30px;
 }
 
-[class*="form-group col-md-4"]{
-	width: 270px;
+[class*="form-group"]{
+	width: 100%;
+	margin-bottom: 30px;
 }
 
-[class*="sr-only"]{
+#loginForm label{
 	font-weight: bold;
+	font-size: 16px;
 }
 
 [class*="btn btn-lg btn-primary"]{
