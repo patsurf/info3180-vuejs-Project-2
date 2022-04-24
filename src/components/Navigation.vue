@@ -1,3 +1,15 @@
+<script>
+import { RouterLink } from "vue-router";
+
+export default{
+    data() {
+        return {
+            check: sessionStorage.getItem('user_id')
+        };
+    },
+}
+</script>
+
 <template>
   <header>
      <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
@@ -6,15 +18,21 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarCollapse" :key="$route.fullPath">
-          <ul class="navbar-nav nav">
+          <ul class="navbar-nav">
             <li class="nav-item">
               <RouterLink class="nav-link" to="/about">About</RouterLink>
             </li>
             <li class="nav-item">
-              <RouterLink class="nav-link" to="/register">Register</RouterLink>
+              <RouterLink class="nav-link" to="/explore">Explore Cars</RouterLink>
             </li>
             <li class="nav-item">
-              <RouterLink class="nav-link" to="/login">Login</RouterLink>
+              <RouterLink class="nav-link" to="/cars/new">Add Car</RouterLink>
+            </li>
+            <li class="nav-item">
+              <RouterLink class="nav-link" :to="{name: 'user-details'}" >My Profile</RouterLink>
+            </li>
+            <li class="nav-item mr-sm-2">
+              <RouterLink class="nav-link float-end" to="/logout">Logout</RouterLink>
             </li>
           </ul>
         </div>
@@ -22,21 +40,7 @@
  </header> 
 </template>
 
-<script>
-import { RouterLink } from "vue-router";
-
-export default {
-    data() {
-        return {
-             check : sessionStorage.getItem('user_id')
-        };
-    },
-}
-</script>
-
 <style>
-/* Add any component specific styles here */
-.nav{
-  float: right;
-}
+   
 </style>
+
