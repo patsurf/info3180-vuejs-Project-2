@@ -41,7 +41,7 @@ export default{
     <RouterView />
   </main>
 
-  <AppFooter></AppFooter>
+  <!-- <AppFooter></AppFooter> -->
 </template>
 
 

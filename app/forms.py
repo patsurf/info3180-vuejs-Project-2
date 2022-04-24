@@ -15,7 +15,7 @@ class RegisterForm(FlaskForm):
     biography = StringField('Biography', validators=[InputRequired()])      
     photo = FileField('Profile Picture', validators=[
         FileRequired(), 
-        FileAllowed(['jpeg','jpg', 'png'], 'Images only!')
+        FileAllowed(['jpeg','jpg', 'png', 'jfif'], 'Images only!')
     ])
 
 class LoginForm(FlaskForm):
