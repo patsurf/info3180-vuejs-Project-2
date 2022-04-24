@@ -1,5 +1,5 @@
 <template>
-    <img id="Car_logo" alt="Car logo" class="logo" src="uploads\photo-1542282088-fe8426682b8f.jfif"/> 
+    <img id="Car_logo" alt="Car logo" class="logo" src="/uploads/car.jpg"> 
     <div class="container">
       <!-- <img alt="Car logo" class="logo" src="uploads\photo-1542282088-fe8426682b8f.jfif"/> -->
       <div class="Herotext">
