@@ -7,7 +7,7 @@ This file creates your application.
 
 from datetime import datetime, timedelta
 from app import app, db
-from flask import render_template, request, jsonify, g, send_from_directory, session, _request_ctx_stack, send_file
+from flask import render_template, request, jsonify, send_file
 from flask_login import login_user, logout_user, current_user, login_required
 import os
 from app.models import Users, Cars, Favourites
