@@ -1,7 +1,7 @@
 <template>
     <div class="profile-card row">
         <div class="column">
-            <img :src="'/uploads/profile_photos/' + profile_image" alt="Profile Image" id="profile_image">  
+            <img :src="'/uploads/' + profile_image" alt="Profile Image" id="profile_image">  
         </div>
         <div class="column">
             <div>
@@ -34,7 +34,7 @@
         <h2>Favourites</h2>
         <div class="card-deck">
             <div v-for="car in Favourites" class="card">
-               <img class="card-img-top" id="car_images" :src="'/uploads/car_photos/' + car.image" alt="Card image cap">
+               <img class="card-img-top" id="car_images" :src="'/uploads/' + car.image" alt="Card image cap">
                 <div class="card-body">
                     <h5 class="card-title">{{ car.year }} {{ car.make }}<button class="tags"><fa icon="tags"/> ${{ car.price }}</button></h5>
                     <p class="card-text" style="color:gray;">{{ car.model }}</p>

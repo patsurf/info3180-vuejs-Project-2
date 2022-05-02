@@ -2,7 +2,7 @@
     <div v-if="message" class="alert alert-success" role="alert">{{ message }}</div>
     <li v-for="err in errorFlask " class="alert alert-danger" role="alert">{{ err }}</li>
     <div class="column">
-        <img id="carDetailsIMG" :src="'/uploads/car_photos/'+ image" alt="car image">
+        <img id="carDetailsIMG" :src="'/uploads/'+ image" alt="car image">
     </div>
     <!-- <div class="Cartext" style="float:left; padding: 20px;"> -->
     <div class="Cartext column" style="padding: 20px">

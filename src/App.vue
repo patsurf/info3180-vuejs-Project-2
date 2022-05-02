@@ -15,11 +15,13 @@ export default{
     computed: {
       //Second navigation bar
        getConditionallyRenderedNavbar() {
-         if (this.$store.state.check){
-           return Navigation;
-         }else{
-           return AppHeader;
-         }
+         console.log('Session Storage Auth: ', sessionStorage.getItem('auth')); 
+          if(sessionStorage.getItem('auth') == 'true'){
+            return Navigation;
+          }
+          else{
+            return AppHeader;
+          }
        }
     },
     methods: {
