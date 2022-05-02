@@ -31,15 +31,15 @@ const store = createStore({
   
   router.beforeEach((to, from, next) => {
       console.log('State: ', store.state.check)
-      if(to.path === '/new-car' && store.state.check === ''){
-        next('/home')
-      }else if(to.path === '/explore' && store.state.check === ''){
-        next('/home')
+      if(to.path === '/cars/new' && sessionStorage.getItem('auth') === 'false'){
+        next('/login')
+      }else if(to.path === '/explore' && sessionStorage.getItem('auth') === 'false'){
+        next('/login')
       }
       else{
         next()
       }
-      if(to.path === '/logout' && store.state.check === true){
+      if(to.path === '/logout' && sessionStorage.getItem('auth') === 'true'){
         console.log("was loggged out");
         sessionStorage.setItem('token', null );
         sessionStorage.setItem('user_id', null );
@@ -51,9 +51,9 @@ const store = createStore({
   
   
       }
-      if(to.path === '/login' && sessionStorage.getItem('token') !== null){
+      if(to.path === '/login' && sessionStorage.getItem('token') !== 'null'){
         console.log("was loggged in");
-        next('/');
+        next('/explore');
   
   
       }

@@ -76,7 +76,7 @@ def register():
             biography = form.biography.data
             photo = form.photo.data
             filename = secure_filename(photo.filename)
-            photo.save(os.path.join(app.config['PROFILE_IMG_UPLOAD_FOLDER'], filename))
+            photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             date_joined = format_date_joined(datetime.now())
             user = Users(username,password,name,email,location,biography,filename,date_joined)
             db.session.add(user)
@@ -136,7 +136,7 @@ def cars():
             car_type = form.car_type.data
             user_id = form.user_id.data
             filename = secure_filename(image.filename)
-            image.save(os.path.join(app.config['CAR_IMG_UPLOAD_FOLDER'], filename))
+            image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             car = Cars(description,make,model,color,year,transmission,car_type,price,filename,user_id)
             db.session.add(car)
             db.session.commit()

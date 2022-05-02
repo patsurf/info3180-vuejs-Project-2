@@ -21,7 +21,7 @@
     <div v-if="!carSearch">
         <div class="card-deck ">
             <div v-for="car in cars" class="card">
-                <img class="card-img-top" id="car_images" :src="'/uploads/car_photos/' + car.image" alt="Card image cap">
+                <img class="card-img-top" id="car_images" :src="'/uploads/' + car.image" alt="Card image cap">
                 <div class="card-body">
                     <h5 class="card-title">{{ car.year }} {{ car.make }}<button class="tags"><fa icon="tags"/> ${{ car.price }}</button></h5>
                     <p class="card-text">{{ car.model }}</p>
@@ -34,7 +34,7 @@
     <div v-else>
         <div class="card-deck">
             <div v-for="car in cars" class="card">
-                <img class="card-img-top" id="car_images" :src="'/uploads/car_photos/' + car.image" alt="Card image cap">
+                <img class="card-img-top" id="car_images" :src="'/uploads/' + car.image" alt="Card image cap">
                 <div class="card-body">
                     <h5 class="card-title">{{ car.year }} {{ car.make }}<button class="tags"><fa icon="tags"/> ${{ car.price }}</button></h5>
                     <p class="card-text">{{ car.model }}</p>
@@ -69,7 +69,12 @@ export default {
             cars: []
         }
     },
-    
+    computed: {
+    price: function () {
+        let dollarUS = Intl.NumberFormat('en-US').format(this.price);
+        return dollarUS;
+        },
+    },
 
     created() {
         this.getCsrfToken();
