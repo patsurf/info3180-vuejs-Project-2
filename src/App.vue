@@ -17,9 +17,11 @@ export default{
        getConditionallyRenderedNavbar() {
          console.log('Session Storage Auth: ', sessionStorage.getItem('auth')); 
           if(sessionStorage.getItem('auth') == 'true'){
+            console.log('Found')
             return Navigation;
           }
           else{
+            console.log('Not Found')
             return AppHeader;
           }
        }

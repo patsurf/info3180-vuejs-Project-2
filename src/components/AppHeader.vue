@@ -7,9 +7,9 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarCollapse" :key="$route.fullPath">
           <ul class="navbar-nav nav">
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <RouterLink class="nav-link" to="/about">About</RouterLink>
-            </li>
+            </li> -->
             <li class="nav-item">
               <RouterLink class="nav-link" to="/register">Register</RouterLink>
             </li>
